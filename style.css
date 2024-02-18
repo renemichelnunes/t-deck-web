@@ -1,0 +1,101 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.title {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.tabs {
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f0f0;
+}
+
+.tab {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+.tab:hover {
+    background-color: #dde;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ddd;
+}
+
+.selected {
+    background-color: #ddd; 
+}
+
+.name-list {
+    height: 200px;
+    width: 320px;
+    overflow-y: scroll;
+    border: 0px solid black;
+    background-color: #ccc;
+}
+
+.name-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.name-list ul li {
+    padding: 10px;
+    border-bottom: 1px solid #bbb;
+}
+
+.name-list ul li:last-child {
+    border-bottom: none;
+}
+
+.chat-messages{
+    overflow-y: auto;
+    margin-top: -235px;
+    margin-left: 340px;
+}
+.text-scroller {
+    width: 320px;
+    height: 200px;
+    border: 0px solid black;
+    overflow-block: auto;
+    background-color: #ccc;
+}
+
+.input-textarea{
+    width: 320px;
+    background-color: #ccc;
+    border-style: hidden;
+}
+
+.status{
+    width: 20px;
+    height: 20px;
+    background-color: #bbb;
+    margin-left: 280px;
+    margin-top: -20px;
+}
+
+.btn-add {
+    margin-top: 10px;
+}
+
+.btn-add input {
+    border-radius: 0;
+    border-style: hidden;
+}
