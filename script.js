@@ -92,11 +92,39 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+let ws = null;
+
 function addContact(){
     console.log("add");
-}
+    ws = new WebSocket(location.protocol === 'https:' ? 'wws://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
+    ws.onopen = function(e){
+        addMessage("Connected");
+        console.log(e);
+    };
+    ws.onerror = function(e){
+        console.log(e);
+    };
+    ws.onmessage = function(e){
+        addMessage(e.data);
+        console.log(e);
+    };
+    ws.onclose = function(e){
+        addMessage("Disconnected");
+        console.log("Disconnected");
+    }
+};
+
+function delContact(){
+    console.log('del');
+    if(ws !== null){
+        ws.close();
+        ws = null;
+        console.log('closed');
+    }
+};
 
 // Example: Add a new message every 2 seconds
+/*
 setInterval(function() {
     const messages = [
         "Error: Missing semicolon at line 10",
@@ -207,4 +235,4 @@ setInterval(function() {
     const randomIndex = Math.floor(Math.random() * messages.length);
     addMessage(messages[randomIndex]);
 }, 2000);
-
+*/
