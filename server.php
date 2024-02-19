@@ -4,9 +4,15 @@ use OpenSwoole\WebSocket\Server;
 use OpenSwoole\Http\Request;
 use OpenSwoole\WebSocket\Frame;
 
-$server = new Server("127.0.0.1", 9501);
+$server = new Server("127.0.0.1", 9501, OpenSwoole\Server::POOL_MODE, OpenSwoole\Constant::SOCK_TCP | OpenSwoole\Constant::SSL);
 $stopHello = FALSE;
 
+$server->set([
+    'ssl_cert_file' => __DIR__ . '/config/ssl.cert',
+    'ssl_key_file' => __DIR__ . '/config/ssl.key',
+    'ssl_allow_self_signed' => true,
+    'ssl_protocols' => OpenSwoole\Constant::SSL_TLSv1_2 | OpenSwoole\Constant::SSL_TLSv1_3 | OpenSwoole\Constant::SSL_TLSv1_1 | OpenSwoole\Constant::SSL_SSLv2,
+]);
 $server->on("Start", function(Server $server)
 {
     echo "OpenSwoole WebSocket Server is started at http://127.0.0.1:9501\n";
@@ -35,7 +41,6 @@ $server->on('Open', function(Server $server, OpenSwoole\Http\Request $request)
 $server->on('Message', function(Server $server, Frame $frame)
 {
     echo "received message: {$frame->data}\n";
-    $server->push($frame->fd, json_encode(["hello", time()]));
 });
 
 $server->on('Close', function(Server $server, int $fd)

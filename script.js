@@ -76,6 +76,7 @@ function addMessage(message) {
     textScroller.innerHTML += message + "<br>";
     // Scroll to the last message
     textScroller.scrollTo(0, textScroller.scrollHeight);
+    ws.send(message);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
