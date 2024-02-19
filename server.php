@@ -8,10 +8,10 @@ $server = new Server("127.0.0.1", 9501, OpenSwoole\Server::POOL_MODE, OpenSwoole
 $stopHello = FALSE;
 
 $server->set([
-    'ssl_cert_file' => __DIR__ . '/config/ssl.cert',
+    'ssl_cert_file' => __DIR__ . '/config/ssl.pem',
     'ssl_key_file' => __DIR__ . '/config/ssl.key',
     'ssl_allow_self_signed' => true,
-    'ssl_protocols' => OpenSwoole\Constant::SSL_TLSv1_2 | OpenSwoole\Constant::SSL_TLSv1_3 | OpenSwoole\Constant::SSL_TLSv1_1 | OpenSwoole\Constant::SSL_SSLv2,
+    //'ssl_protocols' => OpenSwoole\Constant::SSL_TLSv1_2 | OpenSwoole\Constant::SSL_TLSv1_3 | OpenSwoole\Constant::SSL_TLSv1_1 | OpenSwoole\Constant::SSL_SSLv2,
 ]);
 $server->on("Start", function(Server $server)
 {
@@ -41,6 +41,14 @@ $server->on('Open', function(Server $server, OpenSwoole\Http\Request $request)
 $server->on('Message', function(Server $server, Frame $frame)
 {
     echo "received message: {$frame->data}\n";
+    if($frame->opcode == 0x08)
+    {
+        echo "Close frame received: Code {$frame->code} Reason {$frame->reason}\n";
+    }
+    else
+    {
+        echo "Message received: {$frame->data}\n";
+    }
 });
 
 $server->on('Close', function(Server $server, int $fd)

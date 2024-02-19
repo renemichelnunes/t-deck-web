@@ -97,8 +97,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function addContact(){
     console.log("add");
-    ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
-    //ws = new WebSocket('wss://' + window.location.host + ':9501');
+    //ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
+    ws = new WebSocket('wss://' + window.location.host + ':9501');
     ws.onopen = function(e){
         addMessage("Connected");
         console.log(e);
