@@ -76,7 +76,8 @@ function addMessage(message) {
     textScroller.innerHTML += message + "<br>";
     // Scroll to the last message
     textScroller.scrollTo(0, textScroller.scrollHeight);
-    ws.send(message);
+    if(ws !== null)
+        ws.send(message);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -97,8 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function addContact(){
     console.log("add");
-    //ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
-    ws = new WebSocket('wss://' + window.location.host + ':9501');
+    ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
     ws.onopen = function(e){
         addMessage("Connected");
         console.log(e);
@@ -124,6 +124,8 @@ function delContact(){
         console.log('closed');
     }
 };
+
+
 
 // Example: Add a new message every 2 seconds
 /*

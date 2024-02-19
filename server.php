@@ -8,10 +8,10 @@ $server = new Server("127.0.0.1", 9501, OpenSwoole\Server::POOL_MODE, OpenSwoole
 $stopHello = FALSE;
 
 $server->set([
-    'ssl_cert_file' => __DIR__ . '/config/ssl.pem',
+    'open_tcp_keepalive' => true,
+    'ssl_cert_file' => __DIR__ . '/config/ssl.crt',
     'ssl_key_file' => __DIR__ . '/config/ssl.key',
     'ssl_allow_self_signed' => true,
-    //'ssl_protocols' => OpenSwoole\Constant::SSL_TLSv1_2 | OpenSwoole\Constant::SSL_TLSv1_3 | OpenSwoole\Constant::SSL_TLSv1_1 | OpenSwoole\Constant::SSL_SSLv2,
 ]);
 $server->on("Start", function(Server $server)
 {
