@@ -1,3 +1,5 @@
+let ws = null;
+
 document.addEventListener("DOMContentLoaded", function() {
     const tabs = document.querySelectorAll('.tab');
     const contents = document.querySelectorAll('.content');
@@ -70,8 +72,8 @@ document.addEventListener("DOMContentLoaded", function() {
 // Function to add a new message to the chat and scroll to the last message
 function addMessage(message) {
     const textScroller = document.querySelector('.text-scroller');
-    textScroller.innerHTML += message + "<br>";
 
+    textScroller.innerHTML += message + "<br>";
     // Scroll to the last message
     textScroller.scrollTo(0, textScroller.scrollHeight);
 }
@@ -92,11 +94,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-let ws = null;
-
 function addContact(){
     console.log("add");
-    ws = new WebSocket(location.protocol === 'https:' ? 'wws://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
+    ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
+    //ws = new WebSocket('wss://' + window.location.host + ':9501');
     ws.onopen = function(e){
         addMessage("Connected");
         console.log(e);
