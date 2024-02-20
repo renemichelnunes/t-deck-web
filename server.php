@@ -10,8 +10,8 @@ $stopHello = FALSE;
 
 $server->set([
     'open_tcp_keepalive' => true,
-    'ssl_cert_file' => __DIR__ . '/config/ssl.crt',
-    'ssl_key_file' => __DIR__ . '/config/ssl.key',
+    'ssl_cert_file' => __DIR__ . '/config/ssl-cert-snakeoil.pem',
+    'ssl_key_file' => __DIR__ . '/config/ssl-cert-snakeoil.key',
     'ssl_allow_self_signed' => true,
 ]);
 
