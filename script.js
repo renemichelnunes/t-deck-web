@@ -76,19 +76,27 @@ function addMessage(message) {
     textScroller.innerHTML += message + "<br>";
     // Scroll to the last message
     textScroller.scrollTo(0, textScroller.scrollHeight);
+}
+
+function sendMesage(cid, message){
+    const data = {
+        command : 'send',
+        id : cid,
+        msg : message
+    }
     if(ws !== null)
-        ws.send(message);
+        ws.send(JSON.stringify(data));
 }
 
 document.addEventListener("DOMContentLoaded", function() {
     const textArea = document.querySelector('.input-textarea');
-    console.log("bora");
     textArea.addEventListener('keydown', function(event) {
         // Check if Enter key is pressed
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault(); // Prevent new line in textarea
             const message = textArea.value.replace(/\r?\n|\r/g, '<br>'); // Get message content
             if (message !== '') {
+                sendMesage('aaaaaa', message);
                 addMessage(message); // Add message
                 textArea.value = ''; // Clear textarea
             }

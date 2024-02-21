@@ -28,6 +28,16 @@ $server->on('Receive', function ($server, $fd, $reactor_id, $data) {
     $server->send($fd, 'Server received your message: ' . $data);
 });
 */
+
+function parse($data){
+    $decoded_data = json_decode($data, true);
+    if ($decoded_data === null && json_last_error() !== JSON_ERROR_NONE) {
+        echo $data;
+    } else {
+        print_r ($decoded_data);
+    }
+};
+
 function hello($timerId, $s, $r){
     global $stopHello;
 
@@ -56,7 +66,7 @@ $server->on('Message', function($server, Frame $frame)
     }
     else
     {
-        echo "Message received: {$frame->data}\n";
+        parse($frame->data);
     }
 });
 
