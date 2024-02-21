@@ -66,9 +66,14 @@ function loadConstacts(contactList) {
         hiddenInput.type = 'hidden';
         hiddenInput.value = id;
 
+        const statusDiv = document.createElement('div');
+        statusDiv.id = 'status';
+        statusDiv.className = 'status';
+
         listItem.appendChild(hiddenInput);
         listItem.appendChild(listItemContent); // Append the div content to the li
         nameList.appendChild(listItem);
+        listItemContent.appendChild(statusDiv);
 
         // Add event listener to each list item
         listItem.addEventListener('click', function() {
