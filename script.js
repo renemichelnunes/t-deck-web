@@ -88,6 +88,7 @@ function loadConstacts(contactList) {
 
             const selectedName = name;
             const selectedId = id;
+            contactID = id;
             console.log("Selected name: " + selectedName + ", ID: " + selectedId);
         });
     });
