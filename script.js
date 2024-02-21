@@ -1,4 +1,5 @@
 let ws = null;
+let contactID = "";
 
 document.addEventListener("DOMContentLoaded", function() {
     const tabs = document.querySelectorAll('.tab');
@@ -37,37 +38,55 @@ document.addEventListener("DOMContentLoaded", function() {
             selectTab(tabId);
         });
     });
+});
 
-    // Event listener for name list item clicks
-    nameListItems.forEach(item => {
-        item.addEventListener('click', function() {
-            // Toggle selected class
-            item.classList.toggle('selected');
+const contactsL = {"contacts" : [
+        {"name": "John", "id": "aaaaaa"},
+        {"name": "Jane", "id": "bbbbbb"},
+        {"name": "Michael", "id": "cccccc"},
+        {"name": "Sarah", "id": "dddddd"},
+        {"name": "David", "id": "eeeeee"},
+        {"name": "Zeca", "id": "ffffff"},
+    ]};
 
-            // Toggle background color
-            if (item.classList.contains('selected')) {
-                item.style.backgroundColor = '#aaf'; // Change this to the desired color
-            } else {
-                item.style.backgroundColor = ''; // Reset to default color
+function loadConstacts(contactList) {
+    const nameList = document.querySelector('.name-list ul');
+
+    let selectedListItem = null;
+
+    contactList.contacts.forEach(function(c) {
+        const name = c.name;
+        const id = c.id;
+
+        const listItem = document.createElement('li');
+        const listItemContent = document.createElement('div'); // Create a div for the content
+        listItemContent.textContent = name;
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.value = id;
+
+        listItem.appendChild(hiddenInput);
+        listItem.appendChild(listItemContent); // Append the div content to the li
+        nameList.appendChild(listItem);
+
+        // Add event listener to each list item
+        listItem.addEventListener('click', function() {
+            // Remove background color from previously selected item
+            if (selectedListItem !== null) {
+                selectedListItem.style.backgroundColor = '';
             }
 
-            // Print the selected name to the console
-            if (item.classList.contains('selected')) {
-                console.log("Selected name:", item.textContent);
-            } else {
-                console.log("Deselected name:", item.textContent);
-            }
+            // Change background color of the clicked item
+            listItem.style.backgroundColor = '#daa'; // Change to your desired background color
+            selectedListItem = listItem;
 
-            // Deselect other items and reset their colors
-            nameListItems.forEach(otherItem => {
-                if (otherItem !== item && otherItem.classList.contains('selected')) {
-                    otherItem.classList.remove('selected');
-                    otherItem.style.backgroundColor = ''; // Reset to default color
-                }
-            });
+            const selectedName = name;
+            const selectedId = id;
+            console.log("Selected name: " + selectedName + ", ID: " + selectedId);
         });
     });
-});
+};
 
 // Function to add a new message to the chat and scroll to the last message
 function addMessage(message) {
@@ -105,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function addContact(){
+    loadConstacts(contactsL);
     console.log("add");
     ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
     ws.onopen = function(e){
