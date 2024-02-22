@@ -91,6 +91,14 @@ body, html {
     margin-top: -20px;
 }
 
+.status-on{
+    width: 20px;
+    height: 20px;
+    background-color: #0f0;
+    margin-left: 280px;
+    margin-top: -20px;
+}
+
 .btn-add {
     margin-top: 10px;
 }

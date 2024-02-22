@@ -41,22 +41,23 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 const contactsL = {"contacts" : [
-        {"name": "John", "id": "aaaaaa"},
-        {"name": "Jane", "id": "bbbbbb"},
-        {"name": "Michael", "id": "cccccc"},
-        {"name": "Sarah", "id": "dddddd"},
-        {"name": "David", "id": "eeeeee"},
-        {"name": "Zeca", "id": "ffffff"},
-    ]};
+    {"name": "John", "id": "aaaaaa"},
+    {"name": "Jane", "id": "bbbbbb"},
+    {"name": "Michael", "id": "cccccc"},
+    {"name": "Sarah", "id": "dddddd"},
+    {"name": "David", "id": "eeeeee"},
+    {"name": "Zeca", "id": "ffffff"},
+]};
 
 function loadConstacts(contactList) {
     const nameList = document.querySelector('.name-list ul');
-
+    nameList.innerHTML = "";
     let selectedListItem = null;
 
     contactList.contacts.forEach(function(c) {
         const name = c.name;
         const id = c.id;
+        const status = c.status;
 
         const listItem = document.createElement('li');
         const listItemContent = document.createElement('div'); // Create a div for the content
@@ -68,7 +69,11 @@ function loadConstacts(contactList) {
 
         const statusDiv = document.createElement('div');
         statusDiv.id = 'status';
-        statusDiv.className = 'status';
+        if(status === 'on')
+            statusDiv.className = 'status-on';
+        else
+            statusDiv.className = 'status';
+        console.log(statusDiv.className);
 
         listItem.appendChild(hiddenInput);
         listItem.appendChild(listItemContent); // Append the div content to the li
@@ -129,8 +134,22 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+function isJSONObject(obj) {
+    return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
+}
+
+function parseData(data){
+    let decData = JSON.parse(data);
+    if(isJSONObject(decData)){
+        if(decData.command === "contacts"){
+            loadConstacts(decData);
+        }
+    }else{
+        addMessage(data);
+    }
+}
+
 function addContact(){
-    loadConstacts(contactsL);
     console.log("add");
     ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
     ws.onopen = function(e){
@@ -141,7 +160,7 @@ function addContact(){
         console.log(e);
     };
     ws.onmessage = function(e){
-        addMessage(e.data);
+        parseData(e.data);
         console.log(e);
     };
     ws.onclose = function(e){

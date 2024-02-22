@@ -29,6 +29,31 @@ $server->on('Receive', function ($server, $fd, $reactor_id, $data) {
 });
 */
 
+class contact{
+    public $name;
+    public $id;
+
+    public function __construct($name, $id, $status){
+        $this->name = $name;
+        $this->id = $id;
+        $this->status = $status;
+    }
+}
+
+$contacts = array();
+$contacts[] = new contact("John Doe", "123456", "on");
+$contacts[] = new contact("Jane Smith", "789012","off");
+$contacts[] = new contact("Michael Johnson", "456789", "off");
+$contacts[] = new contact("Emily Brown", "987654", "off");
+$contacts[] = new contact("David Lee", "654321", "off");
+
+function contactsJSON(){
+    global $contacts;
+    $data = array("command" => "contacts","contacts" => $contacts);
+    $json_data = json_encode($data);
+    return $json_data;
+}
+
 function parse($data){
     $decoded_data = json_decode($data, true);
     if ($decoded_data === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -55,6 +80,8 @@ $server->on('Open', function($server, OpenSwoole\Http\Request $request)
     global $stopHello;
     $stopHello = FALSE;
     echo "connection open: {$request->fd}\n";
+    if($server->isEstablished($request->fd))
+        $server->push($request->fd, contactsJSON());
     $server->tick(1000, "hello", $server, $request);
 });
 
