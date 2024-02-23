@@ -40,15 +40,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-const contactsL = {"contacts" : [
-    {"name": "John", "id": "aaaaaa"},
-    {"name": "Jane", "id": "bbbbbb"},
-    {"name": "Michael", "id": "cccccc"},
-    {"name": "Sarah", "id": "dddddd"},
-    {"name": "David", "id": "eeeeee"},
-    {"name": "Zeca", "id": "ffffff"},
-]};
-
 function loadConstacts(contactList) {
     const nameList = document.querySelector('.name-list ul');
     nameList.innerHTML = "";
@@ -73,7 +64,6 @@ function loadConstacts(contactList) {
             statusDiv.className = 'status-on';
         else
             statusDiv.className = 'status';
-        console.log(statusDiv.className);
 
         listItem.appendChild(hiddenInput);
         listItem.appendChild(listItemContent); // Append the div content to the li
@@ -103,7 +93,8 @@ function loadConstacts(contactList) {
 function addMessage(message) {
     const textScroller = document.querySelector('.text-scroller');
 
-    textScroller.innerHTML += message + "<br>";
+    textScroller.append(message);
+    textScroller.appendChild(document.createElement("br"));
     // Scroll to the last message
     textScroller.scrollTo(0, textScroller.scrollHeight);
 }
@@ -126,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
             event.preventDefault(); // Prevent new line in textarea
             const message = textArea.value.replace(/\r?\n|\r/g, '<br>'); // Get message content
             if (message !== '') {
-                sendMesage('aaaaaa', message);
+                sendMesage(contactID, message);
                 addMessage(message); // Add message
                 textArea.value = ''; // Clear textarea
             }
