@@ -131,12 +131,16 @@ function isJSONObject(obj) {
 }
 
 function parseData(data){
-    let decData = JSON.parse(data);
-    if(isJSONObject(decData)){
-        if(decData.command === "contacts"){
-            loadConstacts(decData);
+    try{
+        let decData = JSON.parse(data);
+        if(isJSONObject(decData)){
+            if(decData.command === "contacts"){
+                loadConstacts(decData);
+            }
+        }else{
+            addMessage(data);
         }
-    }else{
+    }catch{
         addMessage(data);
     }
 }

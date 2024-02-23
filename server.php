@@ -8,6 +8,8 @@ use OpenSwoole\WebSocket\Frame;
 //$server = new Swoole\Server('0.0.0.0', 9501, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);
 $server = new Server('0.0.0.0', 9501);
 $stopHello = FALSE;
+$ser = NULL;
+$req = NULL;
 /*
 $server->set([
     'open_tcp_keepalive' => true,
@@ -54,7 +56,7 @@ function contactsJSON(){
     return $json_data;
 }
 
-function parse($data, $server, $request){
+function parse($data, $server, $frame){
     $decoded_data = json_decode($data, true);
     if ($decoded_data === null && json_last_error() !== JSON_ERROR_NONE) {
         echo $data;
@@ -62,7 +64,12 @@ function parse($data, $server, $request){
         print_r ($decoded_data);
         if($decoded_data["command"] === "sel_contact"){
             echo "ID " . $decoded_data["id"] . "\n";
-            $server->push($request->fd, "Message list");
+            $msgs = array();
+            $msgs[] = "oi";
+            $msgs[] = "bora?";
+            $msgs[] = "vai ou não?";
+            $msgl = array("command" => "msg_list", "messages" => $msgs);
+            $server->push($frame->fd, json_encode($msgl));
         }
     }
 };
@@ -82,14 +89,14 @@ function hello($timerId, $s, $r){
 $server->on('Open', function($server, OpenSwoole\Http\Request $request)
 {
     global $stopHello;
-    global $server_request;
+    global $req;
 
-    $server_request = $request;
     $stopHello = FALSE;
     echo "connection open: {$request->fd}\n";
-    if($server->isEstablished($request->fd))
+    if($server->isEstablished($request->fd)){
         $server->push($request->fd, contactsJSON());
-    $server->tick(1000, "hello", $server, $request);
+    }
+    //$server->tick(1000, "hello", $server, $request);
 });
 
 $server->on('Message', function($server, Frame $frame)
@@ -100,7 +107,7 @@ $server->on('Message', function($server, Frame $frame)
     }
     else
     {
-        parse($frame->data);
+        parse($frame->data, $server, $frame);
     }
 });
 
