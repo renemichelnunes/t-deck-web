@@ -84,6 +84,7 @@ function loadConstacts(contactList) {
             const selectedName = name;
             const selectedId = id;
             contactID = id;
+            ws.send(JSON.stringify({"command" : "sel_contact", "id" : contactID}));
             console.log("Selected name: " + selectedName + ", ID: " + selectedId);
         });
     });

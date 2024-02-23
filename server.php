@@ -54,12 +54,16 @@ function contactsJSON(){
     return $json_data;
 }
 
-function parse($data){
+function parse($data, $server, $request){
     $decoded_data = json_decode($data, true);
     if ($decoded_data === null && json_last_error() !== JSON_ERROR_NONE) {
         echo $data;
     } else {
         print_r ($decoded_data);
+        if($decoded_data["command"] === "sel_contact"){
+            echo "ID " . $decoded_data["id"] . "\n";
+            $server->push($request->fd, "Message list");
+        }
     }
 };
 
@@ -78,6 +82,9 @@ function hello($timerId, $s, $r){
 $server->on('Open', function($server, OpenSwoole\Http\Request $request)
 {
     global $stopHello;
+    global $server_request;
+
+    $server_request = $request;
     $stopHello = FALSE;
     echo "connection open: {$request->fd}\n";
     if($server->isEstablished($request->fd))
