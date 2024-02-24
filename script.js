@@ -136,6 +136,11 @@ function parseData(data){
         if(isJSONObject(decData)){
             if(decData.command === "contacts"){
                 loadConstacts(decData);
+            }else if(decData.command === "msg_list"){
+                document.querySelector('.text-scroller').innerHTML = "";
+                decData.messages.forEach(function(m){
+                    addMessage(m);
+                });
             }
         }else{
             addMessage(data);
@@ -145,11 +150,15 @@ function parseData(data){
     }
 }
 
+function clear_contacts_and_messages(){
+    document.querySelector('.text-scroller').innerHTML = "";
+    document.querySelector('.name-list ul').innerHTML = "";
+}
+
 function addContact(){
     console.log("add");
     ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
     ws.onopen = function(e){
-        addMessage("Connected");
         console.log(e);
     };
     ws.onerror = function(e){
@@ -160,7 +169,7 @@ function addContact(){
         console.log(e);
     };
     ws.onclose = function(e){
-        addMessage("Disconnected");
+        clear_contacts_and_messages();
         console.log("Disconnected");
     }
 };
