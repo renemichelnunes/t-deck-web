@@ -107,3 +107,8 @@ body, html {
     border-radius: 0;
     border-style: hidden;
 }
+
+.contact_header {
+    width: 320px;
+    background-color: bisque;
+}

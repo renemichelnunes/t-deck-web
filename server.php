@@ -42,6 +42,16 @@ class contact{
     }
 }
 
+class message{
+    public $msg;
+    public $msg_date;
+
+    public function __construct($msg, $msg_date){
+        $this->msg = $msg;
+        $this->msg_date = $msg_date;
+    }
+}
+
 $contacts = array();
 $contacts[] = new contact("John Doe", "123456", "on");
 $contacts[] = new contact("Jane Smith", "789012","off");
@@ -65,9 +75,9 @@ function parse($data, $server, $frame){
         if($decoded_data["command"] === "sel_contact"){
             echo "ID " . $decoded_data["id"] . "\n";
             $msgs = array();
-            $msgs[] = "oi";
-            $msgs[] = "bora?";
-            $msgs[] = "vai ou não?";
+            $msgs[] = new message("oi", "24/02/2024 8:18");
+            $msgs[] = new message("bora?", "24/02/2024 8:20");
+            $msgs[] = new message("vai ou não", "24/02/2024 8:21");
             $msgl = array("command" => "msg_list", "messages" => $msgs);
             $server->push($frame->fd, json_encode($msgl));
         }

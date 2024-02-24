@@ -1,5 +1,6 @@
 let ws = null;
 let contactID = "";
+let contactName = "";
 
 document.addEventListener("DOMContentLoaded", function() {
     const tabs = document.querySelectorAll('.tab');
@@ -84,6 +85,7 @@ function loadConstacts(contactList) {
             const selectedName = name;
             const selectedId = id;
             contactID = id;
+            contactName = name;
             ws.send(JSON.stringify({"command" : "sel_contact", "id" : contactID}));
             console.log("Selected name: " + selectedName + ", ID: " + selectedId);
         });
@@ -119,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const message = textArea.value.replace(/\r?\n|\r/g, '<br>'); // Get message content
             if (message !== '') {
                 sendMesage(contactID, message);
+                add_contact_msg('Me', '');
                 addMessage(message); // Add message
                 textArea.value = ''; // Clear textarea
             }
@@ -126,8 +129,32 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+function formatDate(date) {
+    // Get day, month, year, hours, and minutes
+    var day = String(date.getDate()).padStart(2, '0');
+    var month = String(date.getMonth() + 1).padStart(2, '0'); // Month starts from 0
+    var year = date.getFullYear();
+    var hours = String(date.getHours()).padStart(2, '0');
+    var minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    // Concatenate the parts to form the desired format
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
 function isJSONObject(obj) {
     return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
+}
+
+function add_contact_msg(name, msg_date){
+    var currentDate = new Date();
+    var formattedDate = formatDate(currentDate);
+    var div_contact = document.createElement('div');
+    div_contact.className = 'contact_header';
+    if(msg_date !== "")
+        div_contact.textContent = name + ' - ' + msg_date;
+    else
+        div_contact.textContent = name + ' - ' + formattedDate;
+    document.querySelector('.text-scroller').appendChild(div_contact);
 }
 
 function parseData(data){
@@ -139,7 +166,8 @@ function parseData(data){
             }else if(decData.command === "msg_list"){
                 document.querySelector('.text-scroller').innerHTML = "";
                 decData.messages.forEach(function(m){
-                    addMessage(m);
+                    add_contact_msg(contactName, m.msg_date);
+                    addMessage(m.msg);
                 });
             }
         }else{
