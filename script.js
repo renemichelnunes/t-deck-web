@@ -79,7 +79,7 @@ function loadConstacts(contactList) {
             }
 
             // Change background color of the clicked item
-            listItem.style.backgroundColor = '#daa'; // Change to your desired background color
+            listItem.style.backgroundColor = '#ffe4c4'; // Change to your desired background color
             selectedListItem = listItem;
 
             const selectedName = name;
@@ -120,9 +120,10 @@ document.addEventListener("DOMContentLoaded", function() {
             event.preventDefault(); // Prevent new line in textarea
             const message = textArea.value.replace(/\r?\n|\r/g, '<br>'); // Get message content
             if (message !== '') {
+                var currentDate = new Date();
+                var formattedDate = formatDate(currentDate);
                 sendMesage(contactID, message);
-                add_contact_msg('Me', '');
-                addMessage(message); // Add message
+                add_contact_msg('Me', formattedDate, message);
                 textArea.value = ''; // Clear textarea
             }
         }
@@ -145,16 +146,20 @@ function isJSONObject(obj) {
     return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
 }
 
-function add_contact_msg(name, msg_date){
-    var currentDate = new Date();
-    var formattedDate = formatDate(currentDate);
+function add_contact_msg(name, msg_date, msg){
     var div_contact = document.createElement('div');
-    div_contact.className = 'contact_header';
-    if(msg_date !== "")
-        div_contact.textContent = name + ' - ' + msg_date;
-    else
-        div_contact.textContent = name + ' - ' + formattedDate;
-    document.querySelector('.text-scroller').appendChild(div_contact);
+    var textScroller = document.querySelector('.text-scroller')
+    if(name !== "Me"){
+        div_contact.className = 'contact_header';
+    }
+    else{
+        div_contact.className = 'contact_header2'
+    }
+    div_contact.append(name + ' ' + msg_date);
+    div_contact.appendChild(document.createElement('br'));
+    div_contact.append(msg);
+    textScroller.appendChild(div_contact);
+    textScroller.scrollTo(0, textScroller.scrollHeight);
 }
 
 function parseData(data){
@@ -166,8 +171,7 @@ function parseData(data){
             }else if(decData.command === "msg_list"){
                 document.querySelector('.text-scroller').innerHTML = "";
                 decData.messages.forEach(function(m){
-                    add_contact_msg(contactName, m.msg_date);
-                    addMessage(m.msg);
+                    add_contact_msg(contactName, m.msg_date, m.msg);
                 });
             }
         }else{

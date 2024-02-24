@@ -110,5 +110,10 @@ body, html {
 
 .contact_header {
     width: 320px;
-    background-color: bisque;
+    background-color: #ffe4c4;
+}
+
+.contact_header2 {
+    width: 320px;
+    background-color: #bed5de;
 }
