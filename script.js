@@ -69,7 +69,13 @@ function loadConstacts(contactList) {
         listItem.appendChild(hiddenInput);
         listItem.appendChild(listItemContent); // Append the div content to the li
         nameList.appendChild(listItem);
+
         listItemContent.appendChild(statusDiv);
+
+        const last_msg = document.createElement('div');
+        last_msg.textContent = 'is there a way using only css to limit a text to a fized size?';
+        last_msg.classList = 'last_msg';
+        listItem.appendChild(last_msg);
 
         // Add event listener to each list item
         listItem.addEventListener('click', function() {
@@ -122,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (message !== '') {
                 var currentDate = new Date();
                 var formattedDate = formatDate(currentDate);
-                sendMesage(contactID, message);
+                sendMesage(contactID, message.replace(/<br>/g, '\n'));
                 add_contact_msg('Me', formattedDate, message);
                 textArea.value = ''; // Clear textarea
             }
@@ -157,7 +163,7 @@ function add_contact_msg(name, msg_date, msg){
     }
     div_contact.append(name + ' ' + msg_date);
     div_contact.appendChild(document.createElement('br'));
-    div_contact.append(msg);
+    div_contact.innerHTML += msg;
     textScroller.appendChild(div_contact);
     textScroller.scrollTo(0, textScroller.scrollHeight);
 }

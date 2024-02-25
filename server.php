@@ -77,7 +77,7 @@ function parse($data, $server, $frame){
             $msgs = array();
             $msgs[] = new message("oi", "24/02/2024 8:18");
             $msgs[] = new message("bora?", "24/02/2024 8:20");
-            $msgs[] = new message("vai ou não", "24/02/2024 8:21");
+            $msgs[] = new message("vai ou não?", "24/02/2024 8:21");
             $msgl = array("command" => "msg_list", "messages" => $msgs);
             $server->push($frame->fd, json_encode($msgl));
         }
