@@ -2,6 +2,55 @@ let ws = null;
 let contactID = "";
 let contactName = "";
 
+let contextMenu = document.querySelector('.contextMenu');
+let currentTarget = null;
+
+x = 0;
+y = 0;
+
+function showContextMenu(event, id) {
+    event.preventDefault();
+    currentTarget = event.currentTarget;
+    contextMenu.style.display = 'block';
+    contextMenu.style.left = event.clientX + 'px';
+    contextMenu.style.top = event.clientY + 'px';
+    contextMenu.setAttribute('data-id', id);
+    console.log("id " + id);
+    document.addEventListener('mousedown', handleOutsideClick);
+}
+
+function handleOutsideClick(event) {
+    if (!contextMenu.contains(event.target) && event.target !== currentTarget) {
+        hideContextMenu();
+    }
+}
+
+function hideContextMenu() {
+    contextMenu.style.display = 'none';
+    document.removeEventListener('mousedown', handleOutsideClick);
+}
+
+function edit(event) {
+    event.stopPropagation();
+    let id = contextMenu.getAttribute('data-id');
+    alert('Edit action for div ' + id);
+    hideContextMenu();
+}
+
+function remove(event) {
+    event.stopPropagation();
+    let id = contextMenu.getAttribute('data-id');
+    if(window.confirm('Delete contact?')){
+        if(ws !== null){
+            ws.send(JSON.stringify({"command" : "del_contact", "id" : id}));
+        }
+    }
+    hideContextMenu();
+}
+
+document.getElementById('editContact').addEventListener('click', edit);
+document.getElementById('deleteContact').addEventListener('click', remove);
+
 document.addEventListener("DOMContentLoaded", function() {
     const tabs = document.querySelectorAll('.tab');
     const contents = document.querySelectorAll('.content');
@@ -52,6 +101,9 @@ function loadConstacts(contactList) {
         const status = c.status;
 
         const listItem = document.createElement('li');
+        listItem.oncontextmenu = function(event){
+            showContextMenu(event, id);
+        };
         const listItemContent = document.createElement('div'); // Create a div for the content
         listItemContent.textContent = name;
 
@@ -221,7 +273,36 @@ function delContact(){
     }
 };
 
+function showNew() {
+    document.getElementById("divNew").style.display = "block";
+    document.getElementById("divNew").style.left = x + 'px';
+    document.getElementById("divNew").style.top = y + 'px';
+}
 
+function hideNew() {
+    document.getElementById("divNew").style.display = "none";
+}
+
+function confirmAction() {
+    // Your logic for confirming action goes here
+    hideNew(); // For demonstration, hiding modal after confirmation
+}
+
+function newContact(){
+    showNew();
+}
+
+function getMouseCoordinates(event) {
+    const x = event.clientX;
+    const y = event.clientY;
+    return { x: x, y: y };
+}
+
+document.addEventListener('mousemove', function(event) {
+    const coordinates = getMouseCoordinates(event);
+    x = coordinates.x;
+    y = coordinates.y;
+});
 
 // Example: Add a new message every 2 seconds
 /*

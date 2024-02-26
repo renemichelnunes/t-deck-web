@@ -67,6 +67,7 @@ function contactsJSON(){
 }
 
 function parse($data, $server, $frame){
+    global $contacts;
     $decoded_data = json_decode($data, true);
     if ($decoded_data === null && json_last_error() !== JSON_ERROR_NONE) {
         echo $data;
@@ -80,6 +81,14 @@ function parse($data, $server, $frame){
             $msgs[] = new message("vai ou não?", "24/02/2024 8:21");
             $msgl = array("command" => "msg_list", "messages" => $msgs);
             $server->push($frame->fd, json_encode($msgl));
+        }else if($decoded_data["command"] === "del_contact"){
+            foreach($contacts as $key => $c)
+                if($c->id == $decoded_data["id"]){
+                    unset($contacts[$key]);
+                    $contacts = array_values($contacts);
+                    $server->push($frame->fd, contactsJSON());
+                    break;
+                }
         }
     }
 };

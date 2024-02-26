@@ -10,7 +10,10 @@
     </div>
 </head>
 <body>
-    <script src="script.js"></script>
+    <div class="contextMenu">
+        <div id="editContact">Edit</div>
+        <div id="deleteContact">Delete</div>
+    </div>
     <div class="container">
         <div class="tabs">
             <div class="tab" data-tab="tab1">LoRa Chat</div>
@@ -24,8 +27,9 @@
                 </ul>
             </div>
             <div class="btn-add">
-                <input type="button" id="new" value="New" onclick="addContact()">
-                <input type="button" id="connect" value="Disconnect" onclick="delContact()">
+                <input type="button" id="btnconnect" value="Connect" onclick="addContact()">
+                <input type="button" id="btndisconnect" value="Disconnect" onclick="delContact()">
+                <input type="button" id="btnnew" value="New" onclick="newContact()">
             </div>
             <div class="chat-messages">
                 <div class="text-scroller">
@@ -41,5 +45,14 @@
             Content of Tab 3
         </div>
     </div>
+    <div id="divNew">
+        <form id="frmNew">
+            <textarea id="CID" rows="1" placeholder="ID"></textarea>
+            <textarea id="CName" rows="1" placeholder="Name"></textarea>
+            <input type="button" value="Confirm" onclick="newContact()">
+            <input type="button" value="Close" onclick="hideNew()">
+        </form>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
