@@ -49,8 +49,16 @@
         <form id="frmNew">
             <textarea id="CID" rows="1" placeholder="ID"></textarea>
             <textarea id="CName" rows="1" placeholder="Name"></textarea>
-            <input type="button" value="Confirm" onclick="newContact()">
+            <input type="button" value="Confirm" onclick="confirmNew()">
             <input type="button" value="Close" onclick="hideNew()">
+        </form>
+    </div>
+    <div id="divEdit">
+        <form id="frmEdit">
+            <textarea id="CIDedit" rows="1" placeholder="ID"></textarea>
+            <textarea id="CNameedit" rows="1" placeholder="Name"></textarea>
+            <input type="button" value="Confirm" onclick="confirmEdit()">
+            <input type="button" value="Close" onclick="hideEdit()">
         </form>
     </div>
     <script src="script.js"></script>

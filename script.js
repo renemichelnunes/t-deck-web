@@ -1,5 +1,6 @@
 let ws = null;
 let contactID = "";
+let editContactID = "";
 let contactName = "";
 
 let contextMenu = document.querySelector('.contextMenu');
@@ -8,14 +9,15 @@ let currentTarget = null;
 x = 0;
 y = 0;
 
-function showContextMenu(event, id) {
+function showContextMenu(event, id, name) {
     event.preventDefault();
     currentTarget = event.currentTarget;
     contextMenu.style.display = 'block';
     contextMenu.style.left = event.clientX + 'px';
     contextMenu.style.top = event.clientY + 'px';
     contextMenu.setAttribute('data-id', id);
-    console.log("id " + id);
+    contextMenu.setAttribute('data-name', name);
+    console.log("id " + id + " " + name);
     document.addEventListener('mousedown', handleOutsideClick);
 }
 
@@ -33,7 +35,8 @@ function hideContextMenu() {
 function edit(event) {
     event.stopPropagation();
     let id = contextMenu.getAttribute('data-id');
-    alert('Edit action for div ' + id);
+    let name = contextMenu.getAttribute('data-name');
+    editContact(id, name);
     hideContextMenu();
 }
 
@@ -102,7 +105,7 @@ function loadConstacts(contactList) {
 
         const listItem = document.createElement('li');
         listItem.oncontextmenu = function(event){
-            showContextMenu(event, id);
+            showContextMenu(event, id, name);
         };
         const listItemContent = document.createElement('div'); // Create a div for the content
         listItemContent.textContent = name;
@@ -231,6 +234,8 @@ function parseData(data){
                 decData.messages.forEach(function(m){
                     add_contact_msg(contactName, m.msg_date, m.msg);
                 });
+            }else if(decData.command === "notification"){
+                alert(decData.message);
             }
         }else{
             addMessage(data);
@@ -283,13 +288,46 @@ function hideNew() {
     document.getElementById("divNew").style.display = "none";
 }
 
-function confirmAction() {
-    // Your logic for confirming action goes here
+function confirmNew() {
+    let id = document.getElementById("CID").value;
+    let name = document.getElementById("CName").value;
+    if(ws !== null)
+        ws.send(JSON.stringify({"command" : "new_contact",
+                                "id" : id,
+                                "name" : name}));
     hideNew(); // For demonstration, hiding modal after confirmation
 }
 
 function newContact(){
     showNew();
+}
+
+function showEdit(id, name){
+    document.getElementById("divEdit").style.display = "block";
+    document.getElementById("divEdit").style.left = x + 'px';
+    document.getElementById("divEdit").style.top = y + 'px';
+    document.getElementById("CIDedit").value = id;
+    document.getElementById("CNameedit").value = name;
+    editContactID = id;
+}
+
+function hideEdit(){
+    document.getElementById("divEdit").style.display = "none";
+}
+
+function confirmEdit(){
+    if(ws !== null){
+        ws.send(JSON.stringify({"command" : "edit_contact", 
+                                "id" : editContactID,
+                                "newid" : document.getElementById("CIDedit").value,
+                                "newname" : document.getElementById("CNameedit").value}));
+    }
+    editContactID = "";
+    hideEdit();
+}
+
+function editContact(id, name){
+    showEdit(id, name);
 }
 
 function getMouseCoordinates(event) {

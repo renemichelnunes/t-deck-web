@@ -170,6 +170,29 @@ body, html {
     border-style: hidden;
 }
 
+#divEdit {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 90px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+#divEdit textarea, #divEdit button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#divEdit button {
+    border-radius: 0;
+    border-style: hidden;
+}
+
 .contextMenu {
     display: none;
     position: fixed;

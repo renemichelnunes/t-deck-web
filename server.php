@@ -68,6 +68,7 @@ function contactsJSON(){
 
 function parse($data, $server, $frame){
     global $contacts;
+    $exists = false;
     $decoded_data = json_decode($data, true);
     if ($decoded_data === null && json_last_error() !== JSON_ERROR_NONE) {
         echo $data;
@@ -89,6 +90,46 @@ function parse($data, $server, $frame){
                     $server->push($frame->fd, contactsJSON());
                     break;
                 }
+        }else if($decoded_data["command"] === "edit_contact"){
+            foreach($contacts as $key => $c){
+                foreach($contacts as $d){
+                    if($d->id == $decoded_data["newid"]){
+                        $exists = true;
+                        $server->push($frame->fd, json_encode(array("command" => "notification", "message" => "ID already in use.")));
+                        break;
+                    }
+                }
+                if($exists)
+                    break;
+                if($c->id == $decoded_data["id"]){
+                    if($decoded_data["newid"] !== "")
+                        $contacts[$key]->id = $decoded_data["newid"];
+                    if($decoded_data["newname"] !== "")
+                        $contacts[$key]->name = $decoded_data["newname"];
+                        $server->push($frame->fd, json_encode(array("command" => "notification", "message" => "Contact updated.")));
+                        $server->push($frame->fd, contactsJSON());
+                    break;
+                }
+            }
+        }else if($decoded_data["command"] === "new_contact"){
+            $exists = false;
+            foreach($contacts as $d){
+                if($d->id == $decoded_data["id"]){
+                    $exists = true;
+                    $server->push($frame->fd, json_encode(array("command" => "notification", "message" => "ID already in use.")));
+                    break;
+                }
+                if($d->name == $decoded_data["name"]){
+                    $exists = true;
+                    $server->push($frame->fd, json_encode(array("command" => "notification", "message" => "Name already in use.")));
+                    break;
+                }
+            }
+            if(!$exists){
+                $contacts[] = new contact($decoded_data["name"], $decoded_data["id"], "off");
+                $server->push($frame->fd, contactsJSON());
+                $server->push($frame->fd, json_encode(array("command" => "notification", "message" => "Contact added.")));
+            }
         }
     }
 };
