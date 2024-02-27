@@ -43,10 +43,12 @@ class contact{
 }
 
 class message{
+    public $id;
     public $msg;
     public $msg_date;
 
-    public function __construct($msg, $msg_date){
+    public function __construct($id, $msg, $msg_date){
+        $this->id = $id;
         $this->msg = $msg;
         $this->msg_date = $msg_date;
     }
@@ -59,6 +61,11 @@ $contacts[] = new contact("Michael Johnson", "456789", "off");
 $contacts[] = new contact("Emily Brown", "987654", "off");
 $contacts[] = new contact("David Lee", "654321", "off");
 
+$msgs = array();
+$msgs[] = new message("123456", "oi", "24/02/2024 8:18");
+$msgs[] = new message("123456", "bora?", "24/02/2024 8:20");
+$msgs[] = new message("123456", "vai ou não?", "24/02/2024 8:21");
+
 function contactsJSON(){
     global $contacts;
     $data = array("command" => "contacts","contacts" => $contacts);
@@ -66,8 +73,21 @@ function contactsJSON(){
     return $json_data;
 }
 
+function getCurrentDateTime() {
+    // Get current timestamp
+    date_default_timezone_set(date_default_timezone_get());
+    $timestamp = time();
+
+    // Format date and time
+    $date = date('d/m/Y', $timestamp); // Format date as dd/mm/yyyy
+    $time = date('H:i', $timestamp);   // Format time as hh:mm
+
+    // Return formatted date and time
+    return $date . ' ' . $time;
+}
+
 function parse($data, $server, $frame){
-    global $contacts;
+    global $contacts, $msgs;
     $exists = false;
     $decoded_data = json_decode($data, true);
     if ($decoded_data === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -76,10 +96,6 @@ function parse($data, $server, $frame){
         print_r ($decoded_data);
         if($decoded_data["command"] === "sel_contact"){
             echo "ID " . $decoded_data["id"] . "\n";
-            $msgs = array();
-            $msgs[] = new message("oi", "24/02/2024 8:18");
-            $msgs[] = new message("bora?", "24/02/2024 8:20");
-            $msgs[] = new message("vai ou não?", "24/02/2024 8:21");
             $msgl = array("command" => "msg_list", "messages" => $msgs);
             $server->push($frame->fd, json_encode($msgl));
         }else if($decoded_data["command"] === "del_contact"){
@@ -130,6 +146,8 @@ function parse($data, $server, $frame){
                 $server->push($frame->fd, contactsJSON());
                 $server->push($frame->fd, json_encode(array("command" => "notification", "message" => "Contact added.")));
             }
+        }else if($decoded_data["command"] === "send"){
+            $msgs[] = new message($decoded_data["id"], $decoded_data["msg"], getCurrentDateTime());
         }
     }
 };
