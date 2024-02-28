@@ -208,3 +208,10 @@ body, html {
 #deleteContact:hover {
     background-color: #ffe4c4;
 }
+
+.settings_id {
+    padding: 5px;
+    width: 155px;
+    height: 75px;
+    border: solid 1px #333;
+}
