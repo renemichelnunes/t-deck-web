@@ -213,5 +213,149 @@ body, html {
     padding: 5px;
     width: 155px;
     height: 75px;
-    border: solid 1px #333;
+    border: solid 1px #b5b5b5;
+}
+
+#settings_name {
+    width: 145px;
+    border-style: hidden;
+}
+
+#settings_id {
+    width: 50px;
+    border-style: hidden;
+}
+
+#btngenerate {
+    border-radius: 0;
+    border-style: hidden;
+}
+
+.settings_date {
+    margin-top: 5px;
+    padding: 5px;
+    width: 155px;
+    height: 75px;
+    border: solid 1px #b5b5b5;
+}
+
+.settings_date input {
+    border-style: hidden;
+}
+
+.settings_dx {
+    margin-top: 5px;
+    padding: 5px;
+    width: 155px;
+    height: 75px;
+    border: solid 1px #b5b5b5;
+}
+
+.toggle-btn {
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    cursor: pointer;
+    position: relative;
+    border: 0px;
+}
+/* Style for the inner circle representing the toggle state */
+.toggle-btn .inner-circle {
+    width: 24px;
+    height: 24px;
+    background-color: #808080;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s ease;
+}
+/* Style for the active state */
+.toggle-btn.active .inner-circle {
+    transform: translateX(25px);
+    background-color: rgb(165, 255, 165);
+    box-shadow: 0px 0px 10px 5px rgb(165, 255, 165);
+}
+
+.settings_ui {
+    margin-top: 5px;
+    padding: 5px;
+    width: 155px;
+    height: 75px;
+    border: solid 1px #b5b5b5;
+}
+
+.settings_ui input {
+    border-style: hidden;
+}
+
+#settings_uicolor {
+    width: 50px;
+}
+
+.settings_brightness {
+    margin-top: 5px;
+    padding: 5px;
+    width: 155px;
+    height: 75px;
+    border: solid 1px #b5b5b5;
+}
+
+/* Styles for the brightness control */
+.brightness-control {
+    width: 150px;
+    height: 20px; /* Increased height for better usability */
+    background-color: #f0f0f0;
+    border-radius: 20px; /* Adjusted to match the height */
+    position: relative;
+    overflow: hidden;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: calc(100% - 5px); /* Adjusted width to accommodate the knob */
+    height: 20px;
+    background-color: transparent;
+    outline: none;
+    position: absolute;
+    top: 50%;
+    left: 0px; /* Positioned to align with the knob */
+    transform: translateY(-50%);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 40px; /* Increased width for better usability */
+    height: 40px; /* Increased height for better usability */
+    background-color: #000000;
+    border-radius: 50%;
+    cursor: grab;
+    margin-top: -10px; /* Adjusted to center the knob vertically */
+    margin-left: -20px; /* Adjusted to center the knob horizontally */
+    padding: 2px; /* Increase the hit area */
+  }
+
+  .color-picker {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 50px; /* Adjust as needed */
+    left: 50px; /* Adjust as needed */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 9999;
+    display: grid;
+    grid-template-columns: repeat(16, 1fr); /* Adjust as needed */
+    gap: 5px;
+}
+.color-picker div {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.input_save {
+    border-style: hidden;
 }

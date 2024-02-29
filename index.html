@@ -43,26 +43,45 @@
         </div>
         <div class="content" id="tab3" style="display: none;">
             <div class="settings_id">
-                <textarea id="set_id" placeholder="Name" rows="1"></textarea>
+                My ID
+                <input id="settings_name" placeholder="Name">
                 <br>
-                <textarea id="set_name" placeholder="ID" rows="1" maxlength="6"></textarea>
-                <input type="button" value="Generate">
+                <input id="settings_id" placeholder="ID" maxlength="6">
+                <input type="button" id="btngenerate" value="Generate" onclick="generateID()">
             </div>
             <div class="settings_date">
-
+                Date
+                <input type="date" id="settings_date">
+                <br>
+                <input type="time" id="settings_time" min="00:00" max="23:59" required>
             </div>
             <div class="settings_dx">
-                
+                DX Mode
+                <br>
+                <button class="toggle-btn" id="toggleBtn">
+                    <div class="inner-circle"></div>
+                </button>
             </div>
             <div class="settings_wifi">
                 
             </div>
             <div class="settings_ui">
-                
+                UI Color
+                <br>
+                <input type="button" id="color-picker-button" value="Choose a color">
+                <div class="color-picker"></div>
+                <input id="settings_uicolor" maxlength="6" oninput="restrictInput(this)">
+                <input type="button" value="Set" onclick="setUIColor()">
             </div>
             <div class="settings_brightness">
-                
+                Screen brightness
+                <br>
+                <div class="brightness-control">
+                    <!-- Input range slider -->
+                    <input type="range" min="1" max="10" value="5" step="1" oninput="setBrightness(this.value)" id="brightnessRange">
+                </div>
             </div>
+            <input type="button" id="btn_save" class="input_save" value="Save">
         </div>
     </div>
     <div id="divNew">
