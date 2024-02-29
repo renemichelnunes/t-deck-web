@@ -87,7 +87,9 @@ function setBrightness(level) {
     
     // Perform actions based on the selected brightness level
     brightness_value.innerHTML = level;
-    console.log('Brightness level selected: ' + level);
+    if(ws !== null)
+        ws.send(JSON.stringify({"command":"set_brightness", "brightness":level}));
+    console.log(JSON.stringify({"command":"set_brightness", "brightness":level}));
 }
 
 function showContextMenu(event, id, name) {
@@ -361,6 +363,7 @@ document.addEventListener("DOMContentLoaded", function() {
             colorPicker.style.display = 'none';
         }
     });
+    connect();
 });
 
 function formatDate(date) {
@@ -428,6 +431,26 @@ function clear_contacts_and_messages(){
 
 function addContact(){
     console.log("add");
+    ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
+    ws.onopen = function(e){
+        console.log(e);
+    };
+    ws.onerror = function(e){
+        console.log(e);
+    };
+    ws.onmessage = function(e){
+        parseData(e.data);
+        console.log(e);
+    };
+    ws.onclose = function(e){
+        clear_contacts_and_messages();
+        console.log("Disconnected");
+    }
+};
+
+
+
+function connect(){
     ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + ':9501' : 'ws://' + window.location.host + ':9501');
     ws.onopen = function(e){
         console.log(e);
