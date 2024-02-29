@@ -38,8 +38,10 @@ function generateID(){
 
 function setBrightness(level) {
     var brightnessRange = document.getElementById('brightnessRange');
+    var brightness_value = document.getElementById('brightness_value');
     
     // Perform actions based on the selected brightness level
+    brightness_value.innerHTML = level;
     console.log('Brightness level selected: ' + level);
 }
 
@@ -330,6 +332,7 @@ function isJSONObject(obj) {
 
 function add_contact_msg(name, msg_date, msg){
     var div_contact = document.createElement('div');
+    div_contact.style.wordBreak = 'break-word';
     var textScroller = document.querySelector('.text-scroller')
     if(name !== "Me"){
         div_contact.className = 'contact_header';
@@ -339,7 +342,7 @@ function add_contact_msg(name, msg_date, msg){
     }
     div_contact.append(name + ' ' + msg_date);
     div_contact.appendChild(document.createElement('br'));
-    div_contact.innerHTML += msg;
+    div_contact.append(msg);
     textScroller.appendChild(div_contact);
     textScroller.scrollTo(0, textScroller.scrollHeight);
 }
@@ -415,6 +418,10 @@ function hideNew() {
 function confirmNew() {
     let id = document.getElementById("CID").value;
     let name = document.getElementById("CName").value;
+    if(id === '' || name === ''){
+        alert('ID or Name cannot be empty.');
+        return;
+    }
     if(ws !== null)
         ws.send(JSON.stringify({"command" : "new_contact",
                                 "id" : id,

@@ -244,7 +244,8 @@ body, html {
 }
 
 .settings_dx {
-    margin-top: 5px;
+    margin-top: -179px;
+    margin-left: 172px;
     padding: 5px;
     width: 155px;
     height: 75px;
@@ -281,6 +282,7 @@ body, html {
 
 .settings_ui {
     margin-top: 5px;
+    margin-left: 172px;
     padding: 5px;
     width: 155px;
     height: 75px;
@@ -301,6 +303,11 @@ body, html {
     width: 155px;
     height: 75px;
     border: solid 1px #b5b5b5;
+}
+
+#brightness_value {
+    width: 10px;
+    height: 10px;
 }
 
 /* Styles for the brightness control */
