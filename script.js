@@ -3,6 +3,7 @@ let contactID = "";
 let editContactID = "";
 let contactName = "";
 let meID = "111111";
+let dx = false;
 
 let contextMenu = document.querySelector('.contextMenu');
 let currentTarget = null;
@@ -10,12 +11,43 @@ let currentTarget = null;
 x = 0;
 y = 0;
 
+function saveConfig(){
+    var name = document.getElementById('settings_name').value;
+    var id = document.getElementById('settings_id').value;
+
+    console.log(JSON.stringify({"command" : "set_name_id", "name" : name, "id" : id}));
+    if(ws !== null){
+        ws.send(JSON.stringify({"command" : "set_name_id", "name" : name, "id" : id}));
+    }
+}
+
+function setDateTime(){
+    var date = document.getElementById('settings_date');
+    var time = document.getElementById('settings_time');
+    var dateTime = new Date(date.value);
+    var dd = dateTime.getDate() + 1;
+    var mm = dateTime.getMonth() + 1;
+    var yyyy = dateTime.getFullYear();
+    var [hh, mm] = time.value.split(':');
+
+    console.log(JSON.stringify({"command" : "set_date", "dd" : dd, "mm" : mm, "yyyy" : yyyy, "hh" : hh, "mm" : mm}));   
+    if(ws !== null){
+        ws.send(JSON.stringify({"command" : "set_date", "dd" : dd, "mm" : mm, "yyyy" : yyyy, "hh" : hh, "mm" : mm}));
+    }
+}
+
 function dxmode(){
-    console.log('DX mode');
+    dx = true;
+    console.log(JSON.stringify({"command" : "set_dx_mode", "dx" : dx}));
+    if(ws !== null)
+        ws.send(JSON.stringify({"command" : "set_dx_mode", "dx" : dx}));
 }
 
 function normalMode(){
-    console.log('Normal mode');
+    dx = false;
+    console.log(JSON.stringify({"command" : "set_dx_mode", "dx" : dx}));
+    if(ws !== null)
+        ws.send(JSON.stringify({"command" : "set_dx_mode", "dx" : dx}));
 }
 
 function setDxToggle(){
@@ -29,12 +61,25 @@ function restrictInput(input){
 
 function setUIColor(){
     var input = document.getElementById('settings_uicolor');
-    console.log(JSON.stringify({"command" : "ui_color", "color" : input.value}));
+    console.log(JSON.stringify({"command" : "set_ui_color", "color" : input.value}));
 }
 
-function generateID(){
+function generateID() {
+    const alphanum = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let id = '';
 
+    for (let i = 0; i < 6; ++i) {
+        id += alphanum.charAt(Math.floor(Math.random() * alphanum.length));
+    }
+    return id;
 }
+
+function sendGeneratedID(){
+    var input = document.getElementById('settings_id');
+    let id = generateID();
+    input.value = id;
+}
+
 
 function setBrightness(level) {
     var brightnessRange = document.getElementById('brightnessRange');
@@ -234,6 +279,10 @@ document.addEventListener("DOMContentLoaded", function() {
     var hours = currentDate.getHours();
     var minutes = currentDate.getMinutes();
     var formattedTime = (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+    var brightnessRange = document.getElementById('brightnessRange');
+    var brightness_value = document.getElementById('brightness_value');
+
+    brightness_value.innerHTML = brightnessRange.value;
 
     settings_date.value = currentDate.toISOString().split('T')[0];
     settings_time.value = formattedTime;

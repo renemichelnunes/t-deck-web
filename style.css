@@ -272,12 +272,14 @@ body, html {
     top: 3px;
     left: 3px;
     transition: transform 0.3s ease;
+    background-color: rgb(129, 255, 133);
+    box-shadow: 0px 0px 10px 5px rgb(105, 255, 78);
 }
 /* Style for the active state */
 .toggle-btn.active .inner-circle {
     transform: translateX(25px);
-    background-color: rgb(165, 255, 165);
-    box-shadow: 0px 0px 10px 5px rgb(165, 255, 165);
+    background-color: rgb(255, 189, 189);
+    box-shadow: 0px 0px 10px 5px rgb(255, 135, 135);
 }
 
 .settings_ui {
@@ -318,9 +320,9 @@ body, html {
     border-radius: 20px; /* Adjusted to match the height */
     position: relative;
     overflow: hidden;
-  }
+}
 
-  input[type="range"] {
+input[type="range"] {
     -webkit-appearance: none;
     width: calc(100% - 5px); /* Adjusted width to accommodate the knob */
     height: 20px;
@@ -330,21 +332,22 @@ body, html {
     top: 50%;
     left: 0px; /* Positioned to align with the knob */
     transform: translateY(-50%);
-  }
+    overflow: hidden;
+}
 
-  input[type="range"]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 40px; /* Increased width for better usability */
-    height: 40px; /* Increased height for better usability */
+    width: 20px; /* Increased width for better usability */
+    height: 20px; /* Increased height for better usability */
     background-color: #000000;
     border-radius: 50%;
     cursor: grab;
     margin-top: -10px; /* Adjusted to center the knob vertically */
     margin-left: -20px; /* Adjusted to center the knob horizontally */
     padding: 2px; /* Increase the hit area */
-  }
+}
 
-  .color-picker {
+.color-picker {
     display: none; /* Initially hidden */
     position: absolute;
     top: 50px; /* Adjust as needed */

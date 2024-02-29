@@ -47,20 +47,21 @@
                 <input id="settings_name" placeholder="Name">
                 <br>
                 <input id="settings_id" placeholder="ID" maxlength="6">
-                <input type="button" id="btngenerate" value="Generate" onclick="generateID()">
+                <input type="button" id="btngenerate" value="Generate" onclick="sendGeneratedID()">
             </div>
             <div class="settings_date">
                 Date
                 <input type="date" id="settings_date">
                 <br>
                 <input type="time" id="settings_time" min="00:00" max="23:59" required>
+                <input type="button" id="btnSetDate" value="Set" onclick="setDateTime()">
             </div>
             <div class="settings_dx">
-                DX Mode
-                <br>
+                Normal
                 <button class="toggle-btn" id="toggleBtn">
                     <div class="inner-circle"></div>
                 </button>
+                DX
             </div>
             <div class="settings_wifi">
                 
@@ -83,7 +84,7 @@
                 </div>
                 <div id="brightness_value"></div>
             </div>
-            <input type="button" id="btn_save" class="input_save" value="Save">
+            <input type="button" id="btn_save" class="input_save" value="Save" onclick="saveConfig()">
         </div>
     </div>
     <div id="divNew">
