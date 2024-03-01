@@ -15,6 +15,10 @@ function saveConfig(){
     var name = document.getElementById('settings_name').value;
     var id = document.getElementById('settings_id').value;
 
+    if(name === '' || id === ''){
+        alert('Name or ID cannot be empty.');
+        return;
+    }
     console.log(JSON.stringify({"command" : "set_name_id", "name" : name, "id" : id}));
     if(ws !== null){
         ws.send(JSON.stringify({"command" : "set_name_id", "name" : name, "id" : id}));
@@ -25,14 +29,14 @@ function setDateTime(){
     var date = document.getElementById('settings_date');
     var time = document.getElementById('settings_time');
     var dateTime = new Date(date.value);
-    var dd = dateTime.getDate() + 1;
-    var mm = dateTime.getMonth() + 1;
-    var yyyy = dateTime.getFullYear();
+    var d = dateTime.getDate() + 1;
+    var m = dateTime.getMonth() + 1;
+    var y = dateTime.getFullYear();
     var [hh, mm] = time.value.split(':');
 
-    console.log(JSON.stringify({"command" : "set_date", "dd" : dd, "mm" : mm, "yyyy" : yyyy, "hh" : hh, "mm" : mm}));   
+    console.log(JSON.stringify({"command" : "set_date", "d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));   
     if(ws !== null){
-        ws.send(JSON.stringify({"command" : "set_date", "dd" : dd, "mm" : mm, "yyyy" : yyyy, "hh" : hh, "mm" : mm}));
+        ws.send(JSON.stringify({"command" : "set_date", "d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
     }
 }
 
@@ -61,6 +65,8 @@ function restrictInput(input){
 
 function setUIColor(){
     var input = document.getElementById('settings_uicolor');
+    if(ws !== null && input.value !== '')
+        ws.send(JSON.stringify({"command" : "set_ui_color", "color" : input.value}));
     console.log(JSON.stringify({"command" : "set_ui_color", "color" : input.value}));
 }
 
@@ -77,6 +83,7 @@ function generateID() {
 function sendGeneratedID(){
     var input = document.getElementById('settings_id');
     let id = generateID();
+    window.confirm("Advice your contacts about your new ID or they won't receive your messages. Cancel if you want to maintain your actual ID.");
     input.value = id;
 }
 
