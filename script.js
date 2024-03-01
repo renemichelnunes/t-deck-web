@@ -183,6 +183,21 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+function changeStatus(id, status){
+    var list = document.querySelector('.name-list ul');
+    var count = list.childElementCount;
+
+    for(i = 0; i < count; i++){
+        if(list.children[i].children[0] === id){
+            if(status === true)
+                list.children[i].children[1].children[0].className = 'status-on';
+            else
+                list.children[i].children[1].children[0].className = 'status';
+            break;
+        }
+    }
+}
+
 function loadConstacts(contactList) {
     const nameList = document.querySelector('.name-list ul');
     nameList.innerHTML = "";
