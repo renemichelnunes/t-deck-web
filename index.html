@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="style.css">
     <div class="title">
         <h1>T-Deck</h1>
-        <div id="notification-container" class="notification-container">
-            <!-- Notification elements will be dynamically added here -->
+        <button id="notification-button">Notifications<span id="notification-counter">0</span></button>
+        <div id="notification-area" class="hidden" tabindex="0">
+        <div id="notification-list"></div>
+        <a href="#" id="clear-link">Clear</a>
         </div>
     </div>
 </head>

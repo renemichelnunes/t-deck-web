@@ -567,34 +567,89 @@ document.addEventListener('mousemove', function(event) {
     y = coordinates.y;
 });
 
-function showNotification(message) {
-    // Create a new notification element
+var notificationCounter = 0;
+var notificationButton = document.getElementById("notification-button");
+var notificationArea = document.getElementById("notification-area");
+var timeoutId;
+
+// Function to show the notification area
+function showNotificationArea() {
+  notificationArea.classList.remove("hidden");
+  notificationArea.focus();
+}
+
+// Function to hide the notification area
+function hideNotificationArea() {
+  notificationArea.classList.add("hidden");
+}
+
+// Function to hide the notification area after 3 seconds
+function hideNotificationAreaAfterDelay() {
+  timeoutId = setTimeout(function() {
+    hideNotificationArea();
+  }, 3000);
+}
+
+// Function to clear the timeout and reset it to 3 seconds
+function resetTimeout() {
+  clearTimeout(timeoutId);
+  hideNotificationAreaAfterDelay();
+}
+
+// Function to clear the notification list and reset the counter
+function clearNotifications() {
+  document.getElementById("notification-list").innerHTML = "";
+  notificationCounter = 0;
+  document.getElementById("notification-counter").textContent = notificationCounter;
+}
+
+function scrollToBottom() {
+    var notificationArea = document.getElementById("notification-area");
+    notificationArea.scrollTop = notificationArea.scrollHeight;
+}
+
+// Function to show a notification
+function showNotification(title, message) {
     var notificationElement = document.createElement("div");
     notificationElement.classList.add("notification");
-    notificationElement.textContent = message; 
-  
-    // Add the new notification element to the container
-    var container = document.getElementById("notification-container");
-    container.appendChild(notificationElement);
-  
-    // Trigger reflow to apply CSS transition
-    notificationElement.offsetHeight;
-  
-    // Adjust height based on content
-    var contentHeight = notificationElement.scrollHeight;
-    notificationElement.style.height = contentHeight + "px";
 
-    // Show the notification
-    setTimeout(function() {
-      notificationElement.classList.add("show");
-    }, 10); // Add a slight delay for the height adjustment to take effect
-  
-    // Remove the notification after a certain duration (e.g., 3 seconds)
-    setTimeout(function() {
-      notificationElement.classList.remove("show");
-      // Remove the notification element from the DOM after the transition ends
-      notificationElement.addEventListener("transitionend", function() {
-        container.removeChild(notificationElement);
-      });
-    }, 3000); // Adjust the duration as needed (in milliseconds)
+    var titleElement = document.createElement("div");
+    titleElement.textContent = title;
+    titleElement.classList.add("notification-title");
+
+    var messageElement = document.createElement("div");
+    messageElement.textContent = message;
+    messageElement.classList.add("notification-message");
+
+    notificationElement.appendChild(titleElement);
+    notificationElement.appendChild(messageElement);
+
+    var notificationList = document.getElementById("notification-list");
+    notificationList.appendChild(notificationElement);
+
+    // Increment the counter and update the button text
+    notificationCounter++;
+    document.getElementById("notification-counter").textContent = notificationCounter;
+
+    // Show the notification area
+    showNotificationArea();
+    scrollToBottom();
+        
+    // Reset the timeout to hide the notification area
+    resetTimeout();
+}
+
+// Event listener for the notification button
+notificationButton.addEventListener("click", function() {
+  if (notificationArea.classList.contains("hidden")) {
+    showNotificationArea();
+  } else {
+    hideNotificationArea();
   }
+});
+
+// Event listener for the notification area losing focus
+notificationArea.addEventListener("blur", hideNotificationAreaAfterDelay);
+
+// Event listener for the clear link
+document.getElementById("clear-link").addEventListener("click", clearNotifications);

@@ -370,28 +370,63 @@ input[type="range"]::-webkit-slider-thumb {
     border-style: hidden;
 }
   
-.notification-container {
+#notification-button {
     position: fixed;
-    top: 20px;
-    left: 20px;
-    max-width: 600px; /* Adjust as needed */
-  }
-  
-.notification {
-    max-width: 600px; /* Adjust as needed */
-    color: black;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 0;
-    margin-bottom: 10px; /* Spacing between notifications */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    transition: opacity 0.5s ease, height 0.5s ease; /* Smooth animation */
-    opacity: 0; /* Initially hidden */
-    white-space: pre-wrap; /* Allow wrapping at newline characters */
-    text-align: left; /* Justify text to the left */
+    right: 10px;
+    top: 10px;
+    padding: 5px 10px;
+    background-color: #676767;
+    color: #fff;
+    border: none;
+    border-radius: 0px;
+    cursor: pointer;
 }
 
-.notification.show {
-    opacity: 1; /* Make the notification visible */
+#notification-counter {
+    margin-left: 5px;
+    background-color: #fff;
+    color: #000000;
+    padding: 0px 5px;
+    border-radius: 50%;
+}
+
+#notification-area {
+    position: fixed;
+    top: 50px;
+    right: 0px; /* Initially hidden */
+    width: 300px;
+    max-height: 80%;
+    overflow-y: auto;
+    background-color: #ddd;
+    border: 5px solid #ccc;
+    border-radius: 0px;
+    padding: 2px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.notification {
+    margin-bottom: 5px; /* Separation between notifications */
+    padding: 1px;
+    background-color: #333; /* Background color of the notification */
+    color: white; /* Text color of the notification */
+    text-align: left;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+}
+
+.notification-title {
+    color: white; /* Text color of the title */
+    font-weight: bold;
+    margin-bottom: 5px; /* Spacing between title and message */
+    text-align: center;
+}
+
+.notification-message {
+    color: black; /* Text color of the message */
+    background-color: white; /* Background color of the message */
+    white-space: pre-wrap;
+}
+
+.hidden {
+    display: none;
 }
