@@ -188,8 +188,8 @@ function changeStatus(id, status){
     var count = list.childElementCount;
 
     for(i = 0; i < count; i++){
-        if(list.children[i].children[0] === id){
-            if(status === true)
+        if(list.children[i].children[0].value === id){
+            if(status == true)
                 list.children[i].children[1].children[0].className = 'status-on';
             else
                 list.children[i].children[1].children[0].className = 'status';
@@ -566,3 +566,35 @@ document.addEventListener('mousemove', function(event) {
     x = coordinates.x;
     y = coordinates.y;
 });
+
+function showNotification(message) {
+    // Create a new notification element
+    var notificationElement = document.createElement("div");
+    notificationElement.classList.add("notification");
+    notificationElement.textContent = message; 
+  
+    // Add the new notification element to the container
+    var container = document.getElementById("notification-container");
+    container.appendChild(notificationElement);
+  
+    // Trigger reflow to apply CSS transition
+    notificationElement.offsetHeight;
+  
+    // Adjust height based on content
+    var contentHeight = notificationElement.scrollHeight;
+    notificationElement.style.height = contentHeight + "px";
+
+    // Show the notification
+    setTimeout(function() {
+      notificationElement.classList.add("show");
+    }, 10); // Add a slight delay for the height adjustment to take effect
+  
+    // Remove the notification after a certain duration (e.g., 3 seconds)
+    setTimeout(function() {
+      notificationElement.classList.remove("show");
+      // Remove the notification element from the DOM after the transition ends
+      notificationElement.addEventListener("transitionend", function() {
+        container.removeChild(notificationElement);
+      });
+    }, 3000); // Adjust the duration as needed (in milliseconds)
+  }

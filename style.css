@@ -369,3 +369,29 @@ input[type="range"]::-webkit-slider-thumb {
 .input_save {
     border-style: hidden;
 }
+  
+.notification-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    max-width: 600px; /* Adjust as needed */
+  }
+  
+.notification {
+    max-width: 600px; /* Adjust as needed */
+    color: black;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    margin-bottom: 10px; /* Spacing between notifications */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: opacity 0.5s ease, height 0.5s ease; /* Smooth animation */
+    opacity: 0; /* Initially hidden */
+    white-space: pre-wrap; /* Allow wrapping at newline characters */
+    text-align: left; /* Justify text to the left */
+}
+
+.notification.show {
+    opacity: 1; /* Make the notification visible */
+}
