@@ -43,11 +43,13 @@ class contact{
 }
 
 class message{
+    public $me;
     public $id;
     public $msg;
     public $msg_date;
 
-    public function __construct($id, $msg, $msg_date){
+    public function __construct($me, $id, $msg, $msg_date){
+        $this->me = $me;
         $this->id = $id;
         $this->msg = $msg;
         $this->msg_date = $msg_date;
@@ -62,9 +64,13 @@ $contacts[] = new contact("Emily Brown", "987654", "off");
 $contacts[] = new contact("David Lee", "654321", "off");
 
 $msgs = array();
-$msgs[] = new message("123456", "oi", "24/02/2024 8:18");
-$msgs[] = new message("123456", "bora?", "24/02/2024 8:20");
-$msgs[] = new message("123456", "vai ou não?", "24/02/2024 8:21");
+$msgs[] = new message(true, "123456", "oi", "24/02/2024 8:18");
+$msgs[] = new message(false, "123456", "[received]", "24/02/2024 8:18");
+$msgs[] = new message(false, "123456", "bora?", "24/02/2024 8:20");
+$msgs[] = new message(false, "123456", "vai ou não?", "24/02/2024 8:21");
+$msgs[] = new message(true, "123456", "vo não", "24/02/2024 8:23");
+$msgs[] = new message(true, "123456", "ce vai?", "24/02/2024 8:23");
+$msgs[] = new message(false, "123456", "[received]", "24/02/2024 8:23");
 
 function contactsJSON(){
     global $contacts;
@@ -147,7 +153,9 @@ function parse($data, $server, $frame){
                 $server->push($frame->fd, json_encode(array("command" => "notification", "message" => "Contact added.")));
             }
         }else if($decoded_data["command"] === "send"){
-            $msgs[] = new message($decoded_data["id"], $decoded_data["msg"], getCurrentDateTime());
+            $msgs[] = new message(true, $decoded_data["id"], $decoded_data["msg"], getCurrentDateTime());
+        }else if($decoded_data["command"] === "contacts"){
+            $server->push($frame->fd, contactsJSON());
         }
     }
 };
@@ -172,7 +180,7 @@ $server->on('Open', function($server, OpenSwoole\Http\Request $request)
     $stopHello = FALSE;
     echo "connection open: {$request->fd}\n";
     if($server->isEstablished($request->fd)){
-        $server->push($request->fd, contactsJSON());
+        
     }
     //$server->tick(1000, "hello", $server, $request);
 });
