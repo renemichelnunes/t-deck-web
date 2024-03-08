@@ -72,10 +72,23 @@ $msgs[] = new message(true, "123456", "vo não", "24/02/2024 8:23");
 $msgs[] = new message(true, "123456", "ce vai?", "24/02/2024 8:23");
 $msgs[] = new message(false, "123456", "[received]", "24/02/2024 8:23");
 
+$settings = array("command" => "settings",
+                "name" => "Rene",
+                "id" => "aaaaaa",
+                "dx" => true,
+                "color" => "AF0087",
+                "brightness" => 1);
+
 function contactsJSON(){
     global $contacts;
     $data = array("command" => "contacts","contacts" => $contacts);
     $json_data = json_encode($data);
+    return $json_data;
+}
+
+function settingsJSON(){
+    global $settings;
+    $json_data = json_encode($settings);
     return $json_data;
 }
 
@@ -93,7 +106,7 @@ function getCurrentDateTime() {
 }
 
 function parse($data, $server, $frame){
-    global $contacts, $msgs;
+    global $contacts, $msgs, $settings;
     $exists = false;
     $decoded_data = json_decode($data, true);
     if ($decoded_data === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -156,6 +169,24 @@ function parse($data, $server, $frame){
             $msgs[] = new message(true, $decoded_data["id"], $decoded_data["msg"], getCurrentDateTime());
         }else if($decoded_data["command"] === "contacts"){
             $server->push($frame->fd, contactsJSON());
+        }else if($decoded_data["command"] === "read_settings"){
+            $server->push($frame->fd, settingsJSON());
+        }else if($decoded_data["command"] === "set_name_id"){
+            $settings["name"] = $decoded_data["name"];
+            $settings["id"] = $decoded_data["id"];
+            $server->push($frame->fd, "{\"command\" : \"notification\", \"message\" : \"Name  and ID saved.\"}");
+        }else if($decoded_data["command"] === "set_ui_color"){
+            $settings["color"] = $decoded_data["color"];
+            print_r($decoded_data["color"]);
+            print_r($settings["color"]);
+            print_r(settingsJSON());
+            $server->push($frame->fd, "{\"command\" : \"notification\", \"message\" : \"Color saved.\"}");
+        }else if($decoded_data["command"] === "set_dx_mode"){
+            $settings["dx"] = $decoded_data["dx"];
+            $server->push($frame->fd, "{\"command\" : \"notification\", \"message\" : \"DX mode saved.\"}");
+        }else if($decoded_data["command"] === "set_brightness"){
+            $settings["brightness"] = $decoded_data["brightness"];
+            $server->push($frame->fd, "{\"command\" : \"notification\", \"message\" : \"Brightness saved.\"}");
         }
     }
 };

@@ -1,4 +1,4 @@
-    let ws = null;
+let ws = null;
     let contactID = "";
     let editContactID = "";
     let contactName = "";
@@ -130,14 +130,12 @@
 
     function dxmode(){
         dx = true;
-        console.log(JSON.stringify({"command" : "set_dx_mode", "dx" : dx}));
         if(ws !== null)
             ws.send(JSON.stringify({"command" : "set_dx_mode", "dx" : dx}));
     }
 
     function normalMode(){
         dx = false;
-        console.log(JSON.stringify({"command" : "set_dx_mode", "dx" : dx}));
         if(ws !== null)
             ws.send(JSON.stringify({"command" : "set_dx_mode", "dx" : dx}));
     }
@@ -171,8 +169,8 @@
     function sendGeneratedID(){
         var input = document.getElementById('settings_id');
         let id = generateID();
-        window.confirm("Advice your contacts about your new ID or they won't receive your messages. Cancel if you want to maintain your actual ID.");
-        input.value = id;
+        if(window.confirm("Advice your contacts about your new ID or they won't receive your messages. Cancel if you want to maintain your actual ID."))
+            input.value = id;
     }
 
 
@@ -522,6 +520,45 @@
         textScroller.scrollTo(0, textScroller.scrollHeight);
     }
 
+    function playNewMessage() {
+        // Play the first tone (440Hz, 100ms)
+        playSineWave(440, 100, 0.5);
+
+        // Schedule the second tone (600Hz, 100ms) after a delay of 100ms
+        setTimeout(function() {
+            playSineWave(600, 100, 0.5);
+            setTimeout(function() {
+                playSineWave(800, 100, 0.5);
+            }, 100);
+        }, 100);
+    }
+
+    function playSineWave(frequencyInHz, durationInMilliseconds, volume) {
+        // Audio context
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        // Convert duration from milliseconds to seconds
+        const durationInSeconds = durationInMilliseconds / 1000;
+
+        // Create an oscillator node
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain(); // Create a gain node for controlling volume
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequencyInHz, audioCtx.currentTime); // value in hertz
+        oscillator.connect(gainNode); // Connect oscillator to gain node
+        gainNode.connect(audioCtx.destination); // Connect gain node to audio context destination
+
+        // Set volume
+        gainNode.gain.value = volume;
+
+        // Start the oscillator
+        oscillator.start();
+
+        // Stop the oscillator after durationInSeconds seconds
+        oscillator.stop(audioCtx.currentTime + durationInSeconds);
+    }
+
     function parseData(data){
         try{
             let decData = JSON.parse(data);
@@ -530,22 +567,36 @@
                     loadConstacts(decData);
                 }else if(decData.command === "msg_list"){
                     document.querySelector('.text-scroller').innerHTML = "";
-
-                    console.log(getLastMessage(decData.messages));
                     decData.messages.forEach(function(m){
-                        if(m.me === true){
-                            add_contact_msg("Me", m.msg_date, m.msg);
-                        }
-                        else{
-                            add_contact_msg(contactName, m.msg_date, m.msg);
+                        if(contactID !== ""){
+                            if(m.me === true){
+                                add_contact_msg("Me", m.msg_date, m.msg);
+                            }
+                            else{
+                                add_contact_msg(contactName, m.msg_date, m.msg);
+                            }
                         }
                         if(m.msg !== "[received]")
-                            changeStatusMessage(m.id, m.msg);
+                            changeStatusMessage(decData.id, m.msg);
                     });
                 }else if(decData.command === "notification"){
                     showNotification('T-Deck', decData.message);
                 }else if(decData.command === "contact_status"){
                     changeStatus(decData.contact.id, decData.contact.status);
+                }else if(decData.command === "playNewMessage"){
+                    playNewMessage();
+                }else if(decData.command === "disconnect"){
+                    console.log("received disconnect command");
+                    ws.close();
+                }else if(decData.command === "settings"){
+                    document.getElementById('settings_name').value = decData.name;
+                    document.getElementById('settings_id').value = decData.id;
+                    if(decData.dx === true)
+                        setDxToggle();
+                    document.getElementById('settings_uicolor').value = decData.color;
+                    document.getElementById('color-picker-button').style.backgroundColor = "#" + decData.color;
+                    document.getElementById('brightnessRange').value = decData.brightness;
+                    document.getElementById('brightness_value').value = decData.brightness;
                 }
             }else{
                 console.log(data);
@@ -564,6 +615,8 @@
         ws = new WebSocket(location.protocol === 'https:' ? 'wss://' + window.location.host + '/chat' : 'ws://' + window.location.host + ':9501/chat');
         ws.onopen = function(e){
             ws.send(JSON.stringify({"command" : "contacts"}));
+            ws.send(JSON.stringify({"command" : "read_settings"}));
+            document.getElementById('btnconnect').disabled = true;
             console.log(e);
         };
         ws.onerror = function(e){
@@ -575,6 +628,7 @@
         };
         ws.onclose = function(e){
             clear_contacts_and_messages();
+            document.getElementById('btnconnect').disabled = false;
             console.log("Disconnected");
         }
     };
