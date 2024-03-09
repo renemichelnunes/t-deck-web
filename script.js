@@ -620,6 +620,7 @@ let ws = null;
             console.log(e);
         };
         ws.onerror = function(e){
+            showNotification("T-Deck", "Connection error - " + e);
             console.log(e);
         };
         ws.onmessage = function(e){
@@ -630,6 +631,7 @@ let ws = null;
             clear_contacts_and_messages();
             document.getElementById('btnconnect').disabled = false;
             console.log("Disconnected");
+            showNotification("T-Deck", "Disconnected - " + e);
         }
     };
 
