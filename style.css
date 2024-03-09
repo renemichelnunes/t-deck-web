@@ -430,3 +430,28 @@ input[type="range"]::-webkit-slider-thumb {
 .hidden {
     display: none;
 }
+
+.chart-container {
+    width: 800px;
+    height: 200px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    overflow: hidden; /* Ensure the shadow doesn't overflow */
+    margin: 20px;
+}
+.line-rssi {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2;
+}
+.line-snr {
+    fill: none;
+    stroke: crimson;
+    stroke-width: 2;
+}
+.legend {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}

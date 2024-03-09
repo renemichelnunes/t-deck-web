@@ -105,6 +105,25 @@ function getCurrentDateTime() {
     return $date . ' ' . $time;
 }
 
+function new_rssi_snr($timerId, $s, $r) {
+    // Generate random RSSI value between -120 and 0
+    $randomRSSI = mt_rand(-120, 0);
+    
+    // Generate random SNR value between 0 and 20
+    $randomSNR = mt_rand(0, 20);
+
+    // Get current time
+    $currentTime = date("Y-m-d H:i:s");
+
+    if($s->isEstablished($r->fd))
+        $s->push($r->fd, json_encode([
+            "command" => "rssi_snr",
+            "time" => $currentTime,
+            "rssi" => $randomRSSI,
+            "snr" => $randomSNR
+        ]));
+}
+
 function parse($data, $server, $frame){
     global $contacts, $msgs, $settings;
     $exists = false;
@@ -213,7 +232,7 @@ $server->on('Open', function($server, OpenSwoole\Http\Request $request)
     if($server->isEstablished($request->fd)){
         
     }
-    //$server->tick(1000, "hello", $server, $request);
+    $server->tick(1000, "new_rssi_snr", $server, $request);
 });
 
 $server->on('Message', function($server, Frame $frame)
