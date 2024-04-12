@@ -15,6 +15,7 @@ let ws = null;
     var notificationButton = document.getElementById("notification-button");
     var notificationArea = document.getElementById("notification-area");
     var timeoutId;
+    var selectedTimezone = "<-03>3";
 
     // Function to show the notification area
     function showNotificationArea() {
@@ -122,9 +123,9 @@ let ws = null;
         var y = dateTime.getFullYear();
         var [hh, mm] = time.value.split(':');
 
-        console.log(JSON.stringify({"command" : "set_date", "d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
+        console.log(JSON.stringify({"command" : "set_date", "tz" : selectedTimezone, "d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
         if(ws !== null){
-            ws.send(JSON.stringify({"command" : "set_date", "d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
+            ws.send(JSON.stringify({"command" : "set_date", "tz" : selectedTimezone,"d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
         }
     }
 
@@ -376,6 +377,7 @@ let ws = null;
 
     document.addEventListener("DOMContentLoaded", function() {
         const textArea = document.querySelector('.input-textarea');
+        timezone_drop = document.getElementById("citySelect")
         textArea.addEventListener('keydown', function(event) {
             // Check if Enter key is pressed
             if (event.key === 'Enter' && !event.shiftKey) {
@@ -711,7 +713,33 @@ let ws = null;
         y = coordinates.y;
     });
 
-
+    var timezoneMap = {
+        "Pacific/Midway": "<-11>11",
+        "Pacific/Honolulu": "<-10>10",
+        "America/Anchorage": "<-09>9",
+        "America/Los_Angeles": "<-08>8",
+        "America/Denver": "<-07>7",
+        "America/Chicago": "<-06>6",
+        "America/New_York": "<-05>5",
+        "America/Sao_Paulo": "<-03>3",
+        "Atlantic/Cape_Verde": "<-01>1",
+        "Europe/London": "<+00>0",
+        "Europe/Paris": "<+01>1",
+        "Europe/Moscow": "<+03>3",
+        "Asia/Tehran": "<+03>3",
+        "Asia/Dubai": "<+04>4",
+        "Asia/Kolkata": "<+05>5",
+        "Asia/Hong_Kong": "<+08>8",
+        "Asia/Tokyo": "<+09>9",
+        "Australia/Sydney": "<+10>10"
+      };
+      
+      function getSelectedTimezone() {
+        var selectElement = document.getElementById("citySelect");
+        var selectedValue = selectElement.value;
+        selectedTimezone = timezoneMap[selectedValue];
+        console.log("Código de Fusos Horários selecionado:", selectedTimezone);
+      }
     
 // https://d3js.org v7.8.5 Copyright 2010-2023 Mike Bostock
 !function(t,n){"object"==typeof exports&&"undefined"!=typeof module?n(exports):"function"==typeof define&&define.amd?define(["exports"],n):n((t="undefined"!=typeof globalThis?globalThis:t||self).d3=t.d3||{})}(this,(function(t){"use strict";
@@ -3421,12 +3449,12 @@ function draw_rssi_snr(data){
         .range([40, 760]);
 
     var yScaleRssi = d3.scaleLinear()
-        .domain([-120, 0]) // Assuming RSSI values range from -120 dBm to -60 dBm
-        .range([180, 20]);
+        .domain([-147, 0]) // Assuming RSSI values range from -120 dBm to -60 dBm
+        .range([170, 20]);
 
     var yScaleSnr = d3.scaleLinear()
-        .domain([0, 20]) // Assuming SNR values range from 0 to 20 dB
-        .range([180, 20]);
+        .domain([20, 0]) // Assuming SNR values range from 0 to 20 dB
+        .range([20, 170]);
 
     // Define line functions
     var lineRssi = d3.line()
@@ -3460,7 +3488,8 @@ function draw_rssi_snr(data){
         .call(d3.axisLeft(yScaleRssi).ticks(5))
         .append("text")
         .attr("fill", "#000")
-        .attr("transform", "rotate(-90)")
+        .attr("transform", "rotate(0)")
+        .attr("x", 15)
         .attr("y", 6)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
@@ -3472,8 +3501,9 @@ function draw_rssi_snr(data){
         .call(d3.axisRight(yScaleSnr).ticks(5))
         .append("text")
         .attr("fill", "#000")
-        .attr("transform", "rotate(-90)")
-        .attr("y", -20)
+        .attr("transform", "rotate(0)")
+        .attr("y", 5)
+        .attr("x", 35)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
         .text("SNR (dB)");
