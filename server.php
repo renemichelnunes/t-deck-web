@@ -112,6 +112,9 @@ function new_rssi_snr($timerId, $s, $r) {
     // Generate random SNR value between 0 and 20
     $randomSNR = mt_rand(0, 20);
 
+    // Generate random vales between 1 and 1000
+    $randomBat = mt_rand(1, 100);
+
     // Get current time
     $currentTime = date("Y-m-d H:i:s");
 

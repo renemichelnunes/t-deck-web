@@ -12,6 +12,12 @@
         <div id="notification-list"></div>
         <a href="#" id="clear-link">Clear</a>
         </div>
+        <div class="bat_perc">
+
+        </div>
+        <div class="bat">
+            <meter class="bat_meter" min="1" max="100" low="10" high="50" value="0"></meter>
+        </div>
     </div>
 </head>
 <body>
@@ -28,7 +34,7 @@
         <div class="content" id="tab1">
             <div class="name-list">
                 <ul>
-                    
+
                 </ul>
             </div>
             <div class="btn-add">
@@ -38,9 +44,9 @@
             </div>
             <div class="chat-messages">
                 <div class="text-scroller">
-                    
+
                 </div>
-                <textarea id="msg-area" class="input-textarea" rows="4" placeholder="Type your message here, use 'Enter' to send and 'Shift + Enter' to add a new line..."></textarea>
+                <textarea id="msg-area" class="input-textarea" rows="4" maxlength="120" placeholder="Type your message here, use 'Enter' to send and 'Shift + Enter' to add a new line..."></textarea>
             </div>
         </div>
         <div class="content" id="tab2" style="display: none;">
@@ -51,18 +57,23 @@
         <div class="content" id="tab3" style="display: none;">
             <div class="settings_id">
                 My ID
-                <input type="button" id="btn_save" class="input_save" value="Save" onclick="saveConfig()">
                 <input id="settings_name" placeholder="Name">
                 <br>
                 <input id="settings_id" placeholder="ID" maxlength="6">
                 <input type="button" id="btngenerate" value="Generate" onclick="sendGeneratedID()">
+                <br>
+                <input id="settings_key" placeholder="KEY" maxlength="16">
+                <input type="button" id="btngenerate16" value="Generate" onclick="sendGeneratedKEY()">
+                <input type="button" id="btn_save" class="input_save" value="Save" onclick="saveConfig()">
             </div>
             <div class="settings_date">
                 Date
                 <input type="date" id="settings_date">
                 <br>
                 <input type="time" id="settings_time" min="00:00" max="23:59" required>
-                <select id="citySelect" onchange="getSelectedTimezone()">
+                <input type="button" id="btnSetDate" value="Set" onclick="setDateTime()">
+                <br>
+                <select id="citySelect" class="tz" onchange="getSelectedTimezone()">
                     <option value="Timezone"></option>
                     <option value="Pacific/Midway">(GMT-11:00)</option>
                     <option value="Pacific/Honolulu">(GMT-10:00)</option>
@@ -83,7 +94,6 @@
                     <option value="Asia/Tokyo">(GMT+09:00)</option>
                     <option value="Australia/Sydney">(GMT+10:00)</option>
                 </select>
-                <input type="button" id="btnSetDate" value="Set" onclick="setDateTime()">
             </div>
             <div class="settings_dx">
                 Normal
@@ -93,7 +103,7 @@
                 DX
             </div>
             <div class="settings_wifi">
-                
+
             </div>
             <div class="settings_ui">
                 UI Color
@@ -117,16 +127,18 @@
     </div>
     <div id="divNew">
         <form id="frmNew">
-            <textarea id="CID" rows="1" placeholder="ID"></textarea>
+            <textarea id="CID" rows="1" maxlength="6" placeholder="ID"></textarea>
             <textarea id="CName" rows="1" placeholder="Name"></textarea>
+            <textarea id="Ckey" rows="1" maxlength="16" placeholder="KEY"></textarea>
             <input type="button" value="Confirm" onclick="confirmNew()">
             <input type="button" value="Close" onclick="hideNew()">
         </form>
     </div>
     <div id="divEdit">
         <form id="frmEdit">
-            <textarea id="CIDedit" rows="1" placeholder="ID"></textarea>
+            <textarea id="CIDedit" rows="1" maxlength="6" placeholder="ID"></textarea>
             <textarea id="CNameedit" rows="1" placeholder="Name"></textarea>
+            <textarea id="Ckeyedit" rows="1" maxlength="16" placeholder="KEY"></textarea>
             <input type="button" value="Confirm" onclick="confirmEdit()">
             <input type="button" value="Close" onclick="hideEdit()">
         </form>

@@ -1,4 +1,4 @@
-let ws = null;
+    let ws = null;
     let contactID = "";
     let editContactID = "";
     let contactName = "";
@@ -103,14 +103,16 @@ let ws = null;
     function saveConfig(){
         var name = document.getElementById('settings_name').value;
         var id = document.getElementById('settings_id').value;
+        var key = document.getElementById('settings_key').value;
 
         if(name === '' || id === ''){
             alert('Name or ID cannot be empty.');
             return;
         }
-        console.log(JSON.stringify({"command" : "set_name_id", "name" : name, "id" : id}));
+        var json = JSON.stringify({"command" : "set_name_id", "name" : name, "id" : id, "key" : key});
+        console.log(json);
         if(ws !== null){
-            ws.send(JSON.stringify({"command" : "set_name_id", "name" : name, "id" : id}));
+            ws.send(json);
         }
     }
 
@@ -123,9 +125,9 @@ let ws = null;
         var y = dateTime.getFullYear();
         var [hh, mm] = time.value.split(':');
 
-        console.log(JSON.stringify({"command" : "set_date", "tz" : selectedTimezone, "d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
+        console.log(JSON.stringify({"command" : "set_date", "d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
         if(ws !== null){
-            ws.send(JSON.stringify({"command" : "set_date", "tz" : selectedTimezone,"d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
+            ws.send(JSON.stringify({"command" : "set_date", "d" : d, "m" : m, "y" : y, "hh" : hh, "mm" : mm}));
         }
     }
 
@@ -157,11 +159,11 @@ let ws = null;
         console.log(JSON.stringify({"command" : "set_ui_color", "color" : input.value}));
     }
 
-    function generateID() {
+    function generateID(size) {
         const alphanum = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         let id = '';
 
-        for (let i = 0; i < 6; ++i) {
+        for (let i = 0; i < size; ++i) {
             id += alphanum.charAt(Math.floor(Math.random() * alphanum.length));
         }
         return id;
@@ -169,11 +171,17 @@ let ws = null;
 
     function sendGeneratedID(){
         var input = document.getElementById('settings_id');
-        let id = generateID();
+        let id = generateID(6);
         if(window.confirm("Advice your contacts about your new ID or they won't receive your messages. Cancel if you want to maintain your actual ID."))
             input.value = id;
     }
 
+    function sendGeneratedKEY(){
+        var input = document.getElementById('settings_key');
+        let id = generateID(16);
+        if(window.confirm("Advice your contacts about your new key or they won't decode your messages. Cancel if you want to maintain your actual key."))
+            input.value = id;
+    }
 
     function setBrightness(level) {
         var brightness_value = document.getElementById('brightness_value');
@@ -184,7 +192,7 @@ let ws = null;
             ws.send(JSON.stringify({"command":"set_brightness", "brightness":level - 1}));
     }
 
-    function showContextMenu(event, id, name) {
+    function showContextMenu(event, id, name, key) {
         event.preventDefault();
         currentTarget = event.currentTarget;
         contextMenu.style.display = 'block';
@@ -192,6 +200,7 @@ let ws = null;
         contextMenu.style.top = event.clientY + 'px';
         contextMenu.setAttribute('data-id', id);
         contextMenu.setAttribute('data-name', name);
+        contextMenu.setAttribute('data-key', key);
         console.log("id " + id + " " + name);
         document.addEventListener('mousedown', handleOutsideClick);
     }
@@ -211,7 +220,8 @@ let ws = null;
         event.stopPropagation();
         let id = contextMenu.getAttribute('data-id');
         let name = contextMenu.getAttribute('data-name');
-        editContact(id, name);
+        let key = contextMenu.getAttribute('data-key');
+        editContact(id, name, key);
         hideContextMenu();
     }
 
@@ -266,6 +276,8 @@ let ws = null;
                 selectTab(tabId);
             });
         });
+        for(i = 0; i < 20; i++)
+            add_rssi_snr("-147", "0");
     });
 
     function changeStatusMessage(id, msg){
@@ -303,11 +315,12 @@ let ws = null;
         contactList.contacts.forEach(function(c) {
             const name = c.name;
             const id = c.id;
+            const key = c.key !== null ? c.key : "";
             const status = c.status;
 
             const listItem = document.createElement('li');
             listItem.oncontextmenu = function(event){
-                showContextMenu(event, id, name);
+                showContextMenu(event, id, name, key);
             };
             const listItemContent = document.createElement('div'); // Create a div for the content
             listItemContent.textContent = name;
@@ -377,7 +390,6 @@ let ws = null;
 
     document.addEventListener("DOMContentLoaded", function() {
         const textArea = document.querySelector('.input-textarea');
-        timezone_drop = document.getElementById("citySelect")
         textArea.addEventListener('keydown', function(event) {
             // Check if Enter key is pressed
             if (event.key === 'Enter' && !event.shiftKey) {
@@ -559,6 +571,10 @@ let ws = null;
         oscillator.stop(audioCtx.currentTime + durationInSeconds);
     }
 
+    function bat_level(level){
+        document.querySelector(".bat_meter").value = level;
+    }
+
     function parseData(data){
         try{
             let decData = JSON.parse(data);
@@ -591,14 +607,17 @@ let ws = null;
                 }else if(decData.command === "settings"){
                     document.getElementById('settings_name').value = decData.name;
                     document.getElementById('settings_id').value = decData.id;
+                    document.getElementById('settings_key').value = decData.key;
                     if(decData.dx === true)
                         setDxToggle();
                     document.getElementById('settings_uicolor').value = decData.color;
                     document.getElementById('color-picker-button').style.backgroundColor = "#" + decData.color;
                     document.getElementById('brightnessRange').value = parseInt(decData.brightness) + 1;
-                    document.getElementById('brightness_value').value = parseInt(decData.brightness) + 1;
+                    document.getElementById('brightness_value').innerHTML = parseInt(decData.brightness) + 1;
                 }else if(decData.command === "rssi_snr"){
                     add_rssi_snr(decData.rssi, decData.snr);
+                }else if(decData.command === "bat_level"){
+                    bat_level(decData.level)
                 }
             }else{
                 console.log(data);
@@ -658,6 +677,7 @@ let ws = null;
     function confirmNew() {
         let id = document.getElementById("CID").value;
         let name = document.getElementById("CName").value;
+        let key = document.getElementById("Ckey").value;
         if(id === '' || name === ''){
             alert('ID or Name cannot be empty.');
             return;
@@ -665,7 +685,8 @@ let ws = null;
         if(ws !== null)
             ws.send(JSON.stringify({"command" : "new_contact",
                                     "id" : id,
-                                    "name" : name}));
+                                    "name" : name,
+                                    "key" : key}));
         hideNew(); // For demonstration, hiding modal after confirmation
     }
 
@@ -673,12 +694,13 @@ let ws = null;
         showNew();
     }
 
-    function showEdit(id, name){
+    function showEdit(id, name, key){
         document.getElementById("divEdit").style.display = "block";
         document.getElementById("divEdit").style.left = x + 'px';
         document.getElementById("divEdit").style.top = y + 'px';
         document.getElementById("CIDedit").value = id;
         document.getElementById("CNameedit").value = name;
+        document.getElementById("Ckeyedit").value = key;
         editContactID = id;
     }
 
@@ -691,14 +713,15 @@ let ws = null;
             ws.send(JSON.stringify({"command" : "edit_contact",
                                     "id" : editContactID,
                                     "newid" : document.getElementById("CIDedit").value,
-                                    "newname" : document.getElementById("CNameedit").value}));
+                                    "newname" : document.getElementById("CNameedit").value,
+                                    "newkey" : document.getElementById("Ckeyedit").value}));
         }
         editContactID = "";
         hideEdit();
     }
 
-    function editContact(id, name){
-        showEdit(id, name);
+    function editContact(id, name, key){
+        showEdit(id, name, key);
     }
 
     function getMouseCoordinates(event) {
@@ -733,14 +756,22 @@ let ws = null;
         "Asia/Tokyo": "<+09>9",
         "Australia/Sydney": "<+10>10"
       };
-      
+
       function getSelectedTimezone() {
         var selectElement = document.getElementById("citySelect");
         var selectedValue = selectElement.value;
         selectedTimezone = timezoneMap[selectedValue];
         console.log("Código de Fusos Horários selecionado:", selectedTimezone);
+        ws.send(JSON.stringify({"command" : "set_tz", "tz" : selectedTimezone}));
       }
-    
+
+    function updateBat(){
+        var bat = Math.floor(Math.random() * 100 + 1);
+        document.querySelector(".bat_meter").value = bat;
+        document.querySelector(".bat_perc").textContent = bat + "%";
+    }
+
+    setInterval(updateBat, 1000);
 // https://d3js.org v7.8.5 Copyright 2010-2023 Mike Bostock
 !function(t,n){"object"==typeof exports&&"undefined"!=typeof module?n(exports):"function"==typeof define&&define.amd?define(["exports"],n):n((t="undefined"!=typeof globalThis?globalThis:t||self).d3=t.d3||{})}(this,(function(t){"use strict";
 function n(t,n){return null==t||null==n?NaN:t<n?-1:t>n?1:t>=n?0:NaN}function e(t,n){return null==t||null==n?NaN:n<t?-1:n>t?1:n>=t?0:NaN}function r(t){let r,o,a;
@@ -3449,12 +3480,12 @@ function draw_rssi_snr(data){
         .range([40, 760]);
 
     var yScaleRssi = d3.scaleLinear()
-        .domain([-147, 0]) // Assuming RSSI values range from -120 dBm to -60 dBm
-        .range([170, 20]);
+        .domain([-147, 0]) // Assuming RSSI values range from -147 dBm to 0 dBm
+        .range([180, 20]);
 
     var yScaleSnr = d3.scaleLinear()
-        .domain([20, 0]) // Assuming SNR values range from 0 to 20 dB
-        .range([20, 170]);
+        .domain([0, 20]) // Assuming SNR values range from 0 to 20 dB
+        .range([180, 20]);
 
     // Define line functions
     var lineRssi = d3.line()
@@ -3488,8 +3519,7 @@ function draw_rssi_snr(data){
         .call(d3.axisLeft(yScaleRssi).ticks(5))
         .append("text")
         .attr("fill", "#000")
-        .attr("transform", "rotate(0)")
-        .attr("x", 15)
+        .attr("transform", "rotate(-90)")
         .attr("y", 6)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
@@ -3501,9 +3531,8 @@ function draw_rssi_snr(data){
         .call(d3.axisRight(yScaleSnr).ticks(5))
         .append("text")
         .attr("fill", "#000")
-        .attr("transform", "rotate(0)")
-        .attr("y", 5)
-        .attr("x", 35)
+        .attr("transform", "rotate(-90)")
+        .attr("y", -20)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
         .text("SNR (dB)");
@@ -3515,4 +3544,3 @@ function draw_rssi_snr(data){
     svg.append("circle").attr("cx",600).attr("cy",30).attr("r", 6).style("fill", "crimson");
     svg.append("text").attr("x", 610).attr("y", 34).text("SNR").style("font-size", "12px").attr("alignment-baseline","middle");
 }
-
